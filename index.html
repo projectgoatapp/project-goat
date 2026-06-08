@@ -159,7 +159,7 @@
     .last-moment{border:1px solid rgba(255,211,106,.3);background:linear-gradient(90deg,rgba(255,211,106,.10),rgba(89,255,140,.05));border-radius:14px;padding:10px 13px;margin:8px 0 4px;font-size:12px;font-weight:900;color:var(--gold);display:none}
     .last-moment.show{display:block}
     .last-moment-label{font-size:9px;color:var(--dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:3px}
-    .timeline{padding-bottom:120px}
+    .timeline{padding-bottom:240px}
     .timeline-title{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin:14px 0 4px}
     .beat-card{--club1:rgba(89,255,140,.16);--club2:rgba(255,255,255,.04);--clubAccent:var(--green);background:linear-gradient(135deg,var(--club1),rgba(14,28,19,.98) 44%,var(--club2));border:1px solid;border-color:color-mix(in srgb,var(--clubAccent) 42%,rgba(255,255,255,.14));border-radius:18px;padding:14px;margin:10px 0;animation:beatIn .38s ease both;position:relative;overflow:hidden}
     .beat-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--clubAccent);box-shadow:0 0 24px var(--clubAccent);opacity:.85}
@@ -313,6 +313,11 @@
     .ticker-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:1000}
     .ticker-season{font-size:22px;font-weight:1000;color:var(--green);letter-spacing:-.02em}
     .ticker-spinner{font-size:16px;animation:spin 1.4s linear infinite;display:inline-block}
+    .season-advance-btn{display:none;margin-top:10px}
+    .season-divider{border:1px solid rgba(255,211,106,.34);background:linear-gradient(90deg,rgba(255,211,106,.14),rgba(89,255,140,.055));border-radius:16px;padding:12px 14px;margin:16px 0 12px;text-align:center;box-shadow:0 14px 44px rgba(255,211,106,.08)}
+    .season-divider-label{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin-bottom:4px}
+    .season-divider-title{font-size:18px;font-weight:1000;color:var(--gold);text-transform:uppercase;letter-spacing:-.02em}
+    .season-divider-copy{font-size:12px;line-height:1.35;color:var(--muted);font-weight:850;margin-top:5px}
     @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
     .retire-footer{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);z-index:20;padding:18px 16px calc(28px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(5,12,8,1) 55%,rgba(5,12,8,.94) 78%,rgba(5,12,8,.72));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(255,211,106,.22);display:none}
     .retire-footer.show{display:block}
@@ -579,6 +584,9 @@
       .personality b{font-size:10.5px!important;}
     }
 
+    /* Extra breathing room so the final timeline card is not hidden behind the fixed controls */
+    @media (max-width:640px){.timeline{padding-bottom:300px}}
+
   </style>
 </head>
 <body>
@@ -603,7 +611,7 @@
         <div class="share-stat gold"><small>Awards</small><b id="sc-awards">—</b></div>
         <div class="share-stat gold"><small>Ballon D'Goat</small><b id="sc-bd">—</b></div>
       </div>
-      <div class="share-footer">projectgoat.gg</div>
+      <div class="share-footer">projectgoat.app<br>Buy me a coffee?</div>
     </div>
     <div class="share-btn-row">
       <button class="btn secondary" id="shareCopyBtn">📋 Copy image</button>
@@ -767,10 +775,11 @@
   </section>
   <div class="retire-footer" id="retireFooter">
     <div class="season-ticker" id="seasonTicker" style="display:none">
-      <span class="ticker-label">Simulating season</span>
+      <span class="ticker-label" id="seasonTickerLabel">Simulating season</span>
       <span class="ticker-season" id="tickerSeason">—</span>
       <span class="ticker-spinner">⏳</span>
     </div>
+    <button class="btn gold season-advance-btn" id="seasonAdvanceBtn" style="display:none">Generate season →</button>
     <button class="btn gold" id="retireProceedBtn" style="display:none">Hang up the boots — see the legacy →</button>
   </div>
   <section id="summaryScreen" class="screen">
@@ -2299,6 +2308,66 @@ function showCrossroads(eventDef){
  });
 }
 
+// ── SEASON-BY-SEASON CAREER FLOW ─────────────────────────────────────────────
+function seasonLabelForAge(age){
+ const startYear=2008+age;
+ return String(startYear).slice(-2)+'/'+String(startYear+1).slice(-2);
+}
+function setCareerSimulating(isSimulating,age){
+ const ticker=$('seasonTicker'), btn=$('seasonAdvanceBtn'), proceed=$('retireProceedBtn');
+ if(ticker)ticker.style.display=isSimulating?'flex':'none';
+ if(btn)btn.style.display='none';
+ if(proceed)proceed.style.display='none';
+ if($('seasonTickerLabel'))$('seasonTickerLabel').textContent='Simulating season';
+ if($('tickerSeason'))$('tickerSeason').textContent=age?seasonLabelForAge(age):'—';
+}
+function setCareerDecisionPrompt(isDecision,age){
+ const ticker=$('seasonTicker');
+ if(ticker)ticker.style.display='flex';
+ if($('seasonTickerLabel'))$('seasonTickerLabel').textContent=isDecision?'Make a decision':'Simulating season';
+ if($('tickerSeason'))$('tickerSeason').textContent=age?seasonLabelForAge(age):'—';
+}
+function waitForSeasonAdvance(age){
+ return new Promise(resolve=>{
+  const btn=$('seasonAdvanceBtn');
+  const ticker=$('seasonTicker');
+  const proceed=$('retireProceedBtn');
+  const label=seasonLabelForAge(age);
+  if(ticker)ticker.style.display='none';
+  if($('seasonTickerLabel'))$('seasonTickerLabel').textContent='Simulating season';
+  if(proceed)proceed.style.display='none';
+  if(btn){
+   btn.textContent='Generate season '+label+' →';
+   btn.style.display='block';
+   btn.disabled=false;
+   btn.onclick=()=>{
+    btn.disabled=true;
+    btn.style.display='none';
+    if(ticker)ticker.style.display='flex';
+    if($('tickerSeason'))$('tickerSeason').textContent=label;
+    resolve();
+   };
+  }else{
+   resolve();
+  }
+ });
+}
+function addSeasonDivider(age,s){
+ const label=seasonLabelForAge(age);
+ const bits=[];
+ if(s&&typeof s.apps==='number')bits.push(`${s.apps} apps`);
+ if(s&&typeof s.goals==='number')bits.push(`${s.goals}G`);
+ if(s&&typeof s.assists==='number')bits.push(`${s.assists}A`);
+ if(s&&s.finish&&s.finish!=='—')bits.push(`${s.finish}`);
+ if(s&&s.trophies&&s.trophies.length)bits.push(`${s.trophies.length} trophy${s.trophies.length===1?'':'ies'}`);
+ if(s&&s.awards&&s.awards.length)bits.push(`${s.awards.length} award${s.awards.length===1?'':'s'}`);
+ const div=document.createElement('div');
+ div.className='season-divider';
+ div.innerHTML=`<div class="season-divider-label">End of season</div><div class="season-divider-title">${label} complete</div><div class="season-divider-copy">${bits.length?bits.join(' • '):'Season logged. The save waits for your next call.'}</div>`;
+ $('timeline').appendChild(div);
+ div.scrollIntoView({behavior:'smooth',block:'end'});
+}
+
 // ── START CAREER ──────────────────────────────────────────────────────────────
 async function startCareer(){
  const p=state.player;if(!p)return;
@@ -2306,9 +2375,7 @@ async function startCareer(){
  $('timeline').innerHTML='';setScreen('careerScreen');updateMini();
  $('lastMoment').classList.remove('show');
  $('retireFooter').classList.add('show');
- if($('seasonTicker'))$('seasonTicker').style.display='flex';
- if($('retireProceedBtn'))$('retireProceedBtn').style.display='none';
- if($('tickerSeason'))$('tickerSeason').textContent='...';
+ setCareerSimulating(false,16);
  addBeat({age:16,title:'Scout report locked',text:`${p.first} ${p.last} arrives at ${p.club.name}. ${nationLabel(p.nation)}. ${p.position}. ${p.personality.name}. Scout prediction: <strong>${p.prediction.label}</strong>. ${p.prediction.line}`,apps:0,goals:0,assists:0,ovr:0,rating:0,clubName:p.club.name});
  await sleep(900);
  if(isFirstTeamReady(p,16,p.club)){
@@ -2330,11 +2397,15 @@ async function startCareer(){
  const crossEvent=crossroadsPool.length?pick(crossroadsPool):pick(crossroadsEvents);
 
  for(let age=16;age<=p.retirementAge+5;age++){
+  await waitForSeasonAdvance(age);
+  setCareerSimulating(true,age);
   // Fire crossroads once at the right age (and also any early-career loan fork)
   if(age===crossroadsAge&&!state.crossroadsDone){
    state.crossroadsDone=true;
    await sleep(1600);
+   setCareerDecisionPrompt(true,age);
    await showCrossroads(crossEvent);
+   setCareerDecisionPrompt(false,age);
    await sleep(1200);
   }
   // Early-career fork: blocked at big club, loan choice (ages 17-20, tier>=5 starting club)
@@ -2342,29 +2413,33 @@ async function startCareer(){
   if(!state.loanForkDone&&age>=17&&age<=22&&p.club.tier>=5&&p.overall<loanBar){
    state.loanForkDone=true;
    await sleep(1400);
+   setCareerDecisionPrompt(true,age);
    await showLoanFork(p);
+   setCareerDecisionPrompt(false,age);
    await sleep(1000);
   }
   const s=simulateSeason(age);
   updateMini();
-  const seasonYear=2008+age;
-  if($('tickerSeason'))$('tickerSeason').textContent=seasonYear+'/'+(String(seasonYear+1).slice(-2));
+  if($('tickerSeason'))$('tickerSeason').textContent=seasonLabelForAge(age);
   addBeat({age,title:s.title,text:s.text,apps:s.apps,goals:s.goals,assists:s.assists,ovr:s.ovrDelta,rating:s.rating,finish:s.finish,earnings:s.earnings,awardsText:s.awards.length?s.awards.join(', '):'',trophiesText:s.trophies.length?s.trophies.join(', '):'',clubName:s.clubName,currentOvr:state.player.overall,trophyCount:s.trophies.length,awardCount:s.awards.length});
   for(const b of s.specialBeats){
    await sleep(800);addBeat(b);
    if(b.kind==='major-trophy'||b.kind==='major-award'||b.isBallonDor)setLastMoment(b.title+' — '+b.clubName);
   }
+  setCareerSimulating(false,age);
+  addSeasonDivider(age,s);
   if(state.player.careerEnded)break;
   // Benchwarming fork — AFTER simulateSeason so _benchYears is current
   // Only at actual benching clubs (tier>=4), not tiny clubs where not playing is normal
   if(!p._benchwarmForkDone&&(p._benchYears||0)>=2&&age>=17&&age<=25&&p.club.tier>=4){
    p._benchwarmForkDone=true;
    await sleep(1200);
+   setCareerDecisionPrompt(true,age);
    await showBenchwarmFork(p);
+   setCareerDecisionPrompt(false,age);
    await sleep(1000);
   }
-  const pace=age<20?3200:age<28?2400:age<34?2600:3000;
-  await sleep(pace);
+  // Season pauses here until the player starts the next one.
  }
 
  // Retirement: inline beat card + sticky footer button (no destructive modal)
@@ -2373,6 +2448,7 @@ async function startCareer(){
  addBeat({age:p.age,title:'🥾 BOOTS HUNG UP',text:`<strong>${p.first} ${p.last}</strong> retires. ${retireLine} Scroll up and relive every season, or see the legacy below.`,apps:0,goals:0,assists:0,ovr:0,rating:0,finish:'Retired',earnings:0,kind:'retirement-beat',clubName:p.club.name,noStats:true});
  await sleep(600);
  if($('seasonTicker'))$('seasonTicker').style.display='none';
+ if($('seasonAdvanceBtn'))$('seasonAdvanceBtn').style.display='none';
  if($('retireProceedBtn'))$('retireProceedBtn').style.display='block';
  await new Promise(res=>{$('retireProceedBtn').onclick=()=>{$('retireFooter').classList.remove('show');$('retireProceedBtn').style.display='none';res();};});
  showSummary();
@@ -2544,7 +2620,7 @@ $('shareCopyBtn').onclick=async()=>{
  // Text fallback (canvas not available in sandboxed iframe)
  const p=state.player;
  if(!p)return;
- const text=`⚽ Project GOAT\n${p.first} ${p.last}\nGOAT Score: ${state.pendingGoatScore}/100\n${goatStatus(state.pendingGoatScore,p)}\n${p.totalGoals}G ${p.totalAssists}A ${p.totalApps} apps\n🏆 ${p.trophies} trophies • 🏅 ${p.awards} awards • 🌟 ${p.ballonDors} Ballon D'Goat\nprojectgoat.gg`;
+    const text = `⚽ Project GOAT\n${p.first} ${p.last}\nGOAT Score: ${state.pendingGoatScore}/100\n${goatStatus(state.pendingGoatScore, p)}\n${p.totalGoals}G ${p.totalAssists}A ${p.totalApps} apps\n🏆 ${p.trophies} trophies • 🏅 ${p.awards} awards • 🐐 ${p.ballonDors} Ballon D'Goat`;
  try{await navigator.clipboard.writeText(text);}catch(e){}
 };
 
