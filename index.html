@@ -3,7 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Project GOAT</title>
+
+  <!-- Primary SEO -->
+  <title>Project GOAT 🐐 - Football Career Simulator</title>
+  <meta name="title" content="Project GOAT 🐐 - Football Career Simulator" />
+  <meta name="description" content="Create a fictional wonderkid, simulate their football career season by season, chase transfers, trophies, awards and the Ballon D'Goat in an unofficial narrative career sim." />
+  <meta name="keywords" content="Project GOAT, football career simulator, football sim, wonderkid generator, football game, browser game, narrative simulator, Ballon D'Goat" />
+  <meta name="author" content="Project GOAT" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://projectgoat.app/" />
+
+  <!-- App / browser metadata -->
+  <meta name="application-name" content="Project GOAT" />
+  <meta name="apple-mobile-web-app-title" content="Project GOAT" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#050c08" />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- Open Graph / social sharing -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://projectgoat.app/" />
+  <meta property="og:site_name" content="Project GOAT" />
+  <meta property="og:title" content="Project GOAT 🐐 - Football Career Simulator" />
+  <meta property="og:description" content="Create a fictional wonderkid, simulate their football career season by season, and see if they become the GOAT." />
+  <meta property="og:image" content="https://projectgoat.app/project-goat-share.png" />
+  <meta property="og:image:alt" content="Project GOAT football career simulator" />
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://projectgoat.app/" />
+  <meta name="twitter:title" content="Project GOAT 🐐 - Football Career Simulator" />
+  <meta name="twitter:description" content="Create a fictional wonderkid, simulate their career, chase trophies, transfers and the Ballon D'Goat." />
+  <meta name="twitter:image" content="https://projectgoat.app/project-goat-share.png" />
+  <meta name="twitter:image:alt" content="Project GOAT football career simulator" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Project GOAT",
+    "url": "https://projectgoat.app/",
+    "description": "A fictional football career simulator where you create a wonderkid, simulate season-by-season narrative beats, transfers, trophies and awards.",
+    "applicationCategory": "Game",
+    "gamePlatform": "Web browser",
+    "genre": ["Sports", "Simulation", "Narrative"],
+    "operatingSystem": "Any",
+    "inLanguage": "en-GB",
+    "isAccessibleForFree": true,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Project GOAT"
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -247,7 +301,9 @@
     .share-stat small{display:block;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:1000}
     .share-stat b{font-size:18px;color:var(--text)}
     .share-stat.gold b{color:var(--gold)}
-    .share-footer{margin-top:12px;font-size:9px;color:var(--dim);letter-spacing:.18em;text-transform:uppercase}
+    .share-footer{margin-top:12px;font-size:9px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;line-height:1.35}
+    .share-footer a{display:block;color:var(--gold);text-decoration:none;font-weight:1000;letter-spacing:.16em;margin-bottom:6px}
+    .share-footer .legal{display:block;color:rgba(242,255,244,.46);font-size:7px;letter-spacing:.10em;text-transform:none;line-height:1.35}
     .share-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
     /* SUMMARY */
 
@@ -648,7 +704,7 @@
         <div class="share-stat gold"><small>Awards</small><b id="sc-awards">—</b></div>
         <div class="share-stat gold"><small>Ballon D'Goat</small><b id="sc-bd">—</b></div>
       </div>
-      <div class="share-footer">projectgoat.app<br>Buy me a coffee?</div>
+      <div class="share-footer"><a href="https://buymeacoffee.com/projectgoat" target="_blank" rel="noopener">BUY ME A COFFEE → buymeacoffee.com/projectgoat</a><span class="legal">projectgoat.app · Fictional players only. No real player likeness or endorsement intended. Unofficial narrative parody football career sim.</span></div>
     </div>
     <div class="share-btn-row">
       <button class="btn secondary" id="shareCopyBtn">📋 Copy image</button>
@@ -1765,23 +1821,62 @@ function rollDiceOfFate(stakeText){
  });
 }
 
+// Transfer escalation: stop 95+ OVR monsters wasting a decade at a club they have clearly outgrown.
+function clubOvrCeiling(club){
+ const tier=(club&&club.tier)||1;
+ return ({1:62,2:70,3:78,4:85,5:91,6:100}[tier])||78;
+}
+function desiredTierForOverall(ovr){
+ if(ovr>=93)return 6;
+ if(ovr>=86)return 5;
+ if(ovr>=79)return 4;
+ if(ovr>=71)return 3;
+ if(ovr>=63)return 2;
+ return 1;
+}
+function hasOutgrownClub(p){
+ if(!p||!p.club||p.club.tier>=6||p.age>31)return false;
+ const desired=desiredTierForOverall(p.overall);
+ const overBy=p.overall-clubOvrCeiling(p.club);
+ return desired>p.club.tier&&(overBy>=2||p.overall>=86);
+}
+function transferNeed(p){
+ if(!hasOutgrownClub(p))return 0;
+ const tierGap=Math.max(0,desiredTierForOverall(p.overall)-p.club.tier);
+ const ovrGap=Math.max(0,p.overall-clubOvrCeiling(p.club));
+ return clamp((tierGap*.22)+(ovrGap*.035),.20,.92);
+}
+function transferPoolForPlayer(p,minTier,maxTier,exclude=[]){
+ const names=new Set([p.club&&p.club.name,...exclude].filter(Boolean));
+ return bigClubs.filter(c=>!names.has(c.name)&&c.tier>=minTier&&c.tier<=maxTier&&(
+  c.tier>=6?p.overall>=82:
+  c.tier>=5?p.overall>=76:
+  c.tier>=4?p.overall>=68:true
+ ));
+}
+
 // ── TRANSFER AGENCY — player chooses direction ─────────────────────────────────
 async function showTransferChoice(p,age,autoFee){
  return new Promise(resolve=>{
-  // Build three options: trophies, development, wildcard
+  // Build options around the player’s current level. If he has outgrown the club, the market climbs a tier instead of leaving him stranded.
   const saudiClubs=['Riyadh Blue','Riyadh Victory','Jeddah Union','Jeddah Green'];
   const lateCareer=age>=30;
-  // Trophy option: biggest available club
-  const trophyPool=bigClubs.filter(b=>b.tier>=6&&b.name!==p.club.name&&b.rep>p.club.rep);
+  const desiredTier=desiredTierForOverall(p.overall);
+  const climbTier=hasOutgrownClub(p)?Math.max(p.club.tier+1,desiredTier):Math.max(4,p.club.tier);
+  // Trophy option: biggest available club that matches his new level
+  let trophyPool=transferPoolForPlayer(p,Math.max(5,climbTier),6).filter(b=>b.rep>=(p.club.rep-2));
+  if(!trophyPool.length)trophyPool=transferPoolForPlayer(p,5,6);
   const trophyClub=trophyPool.length?pick(trophyPool):pick(bigClubs.filter(b=>b.tier>=5&&b.name!==p.club.name));
-  // Development option: strong but player-focused
-  const devPool=bigClubs.filter(b=>b.tier>=4&&b.tier<=5&&b.name!==p.club.name);
-  const devClub=devPool.length?pick(devPool):pick(bigClubs.filter(b=>b.name!==p.club.name));
-  // Wildcard: interesting club, different league
-  const wildcardPool=lateCareer
+  // Development option: a sensible stepping-stone, never below the club he has outgrown
+  let devPool=transferPoolForPlayer(p,Math.max(4,Math.min(climbTier,5)),Math.max(5,Math.min(climbTier+1,6)),[trophyClub.name]);
+  if(!devPool.length)devPool=transferPoolForPlayer(p,4,5,[trophyClub.name]);
+  const devClub=devPool.length?pick(devPool):pick(bigClubs.filter(b=>b.name!==p.club.name&&b.name!==trophyClub.name));
+  // Wildcard: interesting club, different league; late career can still go weird
+  let wildcardPool=lateCareer
    ?bigClubs.filter(b=>saudiClubs.includes(b.name)||b.rep<p.club.rep)
-   :bigClubs.filter(b=>b.tier>=3&&b.tier<=4&&b.name!==p.club.name&&b.name!==devClub.name);
-  const wildcardClub=wildcardPool.length?pick(wildcardPool):pick(bigClubs.filter(b=>b.name!==p.club.name));
+   :transferPoolForPlayer(p,Math.max(3,Math.min(climbTier-1,5)),Math.max(4,Math.min(climbTier,6)),[trophyClub.name,devClub.name]);
+  if(hasOutgrownClub(p)&&!lateCareer)wildcardPool=wildcardPool.filter(b=>b.tier>=Math.min(5,climbTier));
+  const wildcardClub=wildcardPool.length?pick(wildcardPool):pick(bigClubs.filter(b=>b.name!==p.club.name&&b.name!==devClub.name&&b.name!==trophyClub.name));
   const div=document.createElement('div');
   div.className='beat-card major-crossroads';
   div.style.cssText='--club1:rgba(118,201,255,.18);--club2:rgba(118,201,255,.04);--clubAccent:#76c9ff;';
@@ -1797,7 +1892,7 @@ async function showTransferChoice(p,age,autoFee){
    '<span style="color:var(--blue)">Transfer Window</span></div>'+
    '<div class="beat-head"><div class="age-pill milestone">'+age+'</div>'+
    '<div><div class="beat-title">'+pick(headlines)+'</div>'+
-   '<div class="beat-text">The camp has had enough of speculation. Three serious offers are on the table — or he can stay loyal and shut the noise down. This decides the next chapter.</div></div></div>'+
+   '<div class="beat-text">The camp has had enough of speculation. Three serious offers are on the table — or he can stay loyal and shut the noise down. '+(hasOutgrownClub(p)?'His overall has outgrown the club stature, so the next tier has come knocking. ':'')+'This decides the next chapter.</div></div></div>'+
    '<div class="transfer-choice-btns" style="margin-top:14px">'+
     '<button class="choice-btn" id="txA" style="border-color:rgba(255,211,106,.5);background:rgba(255,211,106,.08)">'+
      '<span style="font-size:20px">🏆</span><br><strong>'+trophyClub.name+'</strong>'+
@@ -1907,14 +2002,19 @@ async function showTransferChoice(p,age,autoFee){
 }
 
 function maybeTransfer(p,age){
- if(age<18||Math.random()>.18-(p.loyalty*.012)+(p.transferIntent*.035)+(p.rep*.006))return null;
+ const forcedNeed=transferNeed(p);
+ if(age<18||(!forcedNeed&&Math.random()>.18-(p.loyalty*.012)+(p.transferIntent*.035)+(p.rep*.006)))return null;
+ if(forcedNeed&&Math.random()>forcedNeed)return null;
  const saudiClubs=['Riyadh Blue','Riyadh Victory','Jeddah Union','Jeddah Green'];
  const exoticClubs=['Los Angeles Stars','Miami Pink','Doha White','Doha Red'];
  const lateCareerOk=age>=32||(age>=29&&p.overall<82);
- // Build pool: Saudi/exotic only available in decline; top clubs gated by OVR floor
+ // Build pool: Saudi/exotic only available in decline; top clubs gated by OVR floor.
+ // If the player has outgrown his club, aim at the next career tier instead of a lateral shuffle.
  let pool=bigClubs.filter(c=>{
+  if(c.name===p.club.name)return false;
   if(saudiClubs.includes(c.name))return lateCareerOk; // Saudi: 32+ or faded
   if(exoticClubs.includes(c.name))return age>=30;      // MLS/Qatar: 30+
+  if(hasOutgrownClub(p))return c.tier>=Math.max(p.club.tier+1,desiredTierForOverall(p.overall))&&c.tier<=6&&(c.rep>=p.club.rep-4);
   if(c.tier>=6)return p.overall>=78;                   // Elite: need to be good
   if(c.tier>=5)return p.overall>=68;                   // Big clubs: decent floor
   return c.rep>=p.club.rep-6;                          // Others: rep-based
@@ -2663,8 +2763,10 @@ function simulateSeason(age){
    // No loan return beat needed — went straight to new club
  }
  } else {
-  // Flag transfer as pending — player gets agency after this season renders
-  const tCheck=.18-(p.loyalty*.012)+(p.transferIntent*.035)+(p.rep*.006);
+  // Flag transfer as pending — player gets agency after this season renders.
+  // Outgrown club check is intentionally stronger than normal transfer noise: a 90+ player at a tier-3/4 club should attract calls.
+  const tNeed=transferNeed(p);
+  const tCheck=Math.max(tNeed,.18-(p.loyalty*.012)+(p.transferIntent*.035)+(p.rep*.006));
   if(age>=18&&Math.random()<tCheck)p._pendingTransfer=true;
  }
  const ps=maybePositionShift(p,age);if(ps)extras.push(ps);
@@ -3216,7 +3318,16 @@ $('shareCopyBtn').onclick=async()=>{
  // Text fallback (canvas not available in sandboxed iframe)
  const p=state.player;
  if(!p)return;
-    const text = `⚽ Project GOAT\n${p.first} ${p.last}\nGOAT Score: ${state.pendingGoatScore}/100\n${goatStatus(state.pendingGoatScore, p)}\n${p.totalGoals}G ${p.totalAssists}A ${p.totalApps} apps\n🏆 ${p.trophies} trophies • 🏅 ${p.awards} awards • 🐐 ${p.ballonDors} Ballon D'Goat\n`;
+    const text = `⚽ Project GOAT
+${p.first} ${p.last}
+GOAT Score: ${state.pendingGoatScore}/100
+${goatStatus(state.pendingGoatScore, p)}
+${p.totalGoals}G ${p.totalAssists}A ${p.totalApps} apps
+🏆 ${p.trophies} trophies • 🏅 ${p.awards} awards • 🐐 ${p.ballonDors} Ballon D'Goat
+
+Support Project GOAT: https://buymeacoffee.com/projectgoat
+Unofficial fictional narrative parody football career sim. No real player likeness or endorsement intended.
+`;
  try{await navigator.clipboard.writeText(text);}catch(e){}
 };
 
