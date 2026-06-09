@@ -2713,7 +2713,7 @@ function simulateSeason(age){
   const isBD=award==="Ballon D'Goat";
   if(isBD){playBallonDor();HAP.ballonDor();}
   else{playTrophy();}
-  specialBeats.push({age,title:isBD?'✨ BALLON D\'OR':'🏅 AWARD WON',text:isBD?`<strong>BALLON D'OR.</strong> The envelope opens. It's his name. ${apps} apps, ${goals} goals, ${assists} assists, ${rating.toFixed(2)} average at ${seasonClub.name}. The save has gone genuinely feral.`:`<strong>${award}</strong>. ${apps} apps, ${goals} goals, ${assists} assists at ${seasonClub.name}.`,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:'major-award',clubName:seasonClub.name,isBallonDor:isBD,newsType:'award',noStats:true});
+  specialBeats.push({age,title:isBD?'✨ BALLON D\'GOAT':'🏅 AWARD WON',text:isBD?`<strong>BALLON D'GOAT.</strong> The envelope opens. It's his name. ${apps} apps, ${goals} goals, ${assists} assists, ${rating.toFixed(2)} average at ${seasonClub.name}. The save has gone genuinely feral.`:`<strong>${award}</strong>. ${apps} apps, ${goals} goals, ${assists} assists at ${seasonClub.name}.`,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:'major-award',clubName:seasonClub.name,isBallonDor:isBD,newsType:'award',noStats:true});
  });
  if(hasNearMiss){
   specialBeats.push({age,title:'💔 CLOSE. SO CLOSE.',text:`He was in the conversation. The ceremony runs long. His name is in the envelope of people who didn't make it. <strong>${p.ballonDorNearMisses} near-miss${p.ballonDorNearMisses===1?'':'es'} now.</strong> The golden door keeps not opening.`,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:'near-miss',clubName:seasonClub.name});
@@ -2729,7 +2729,7 @@ function simulateSeason(age){
  extras.push(wageLine(p,se));
  if(cleanAwards.length)extras.push(`<strong>${cleanAwards.join(', ')}</strong> lands in the cabinet.`);
  if(trophiesWon.length)extras.push(`Trophy parade behaviour: <strong>${trophiesWon.join(', ')}</strong>.`);
- if(cleanAwards.includes("Ballon D'Goat"))extras.push(`<strong>BALLON D'OR WON.</strong> The save has gone feral.`);
+ if(cleanAwards.includes("Ballon D'Goat"))extras.push(`<strong>BALLON D'GOAT WON.</strong> The save has gone feral.`);
  if(injuryText)extras.push(injuryText);
  // On loan: suppress normal transfer — handle separately as "bought during loan"
  let t=null;
@@ -3232,12 +3232,12 @@ function legacyTitle(p){
  }
 
  // Absolute top-end dynasties.
- if(p.ballonDors>=8&&ucl>=4&&worldCups>=1)return picked(['The Record-Breaking GOAT','The Football Final Boss','The Man Who Completed Football','The Golden Ball Overlord','The Impossible Save']);
- if(p.ballonDors>=6)return picked(['The Golden Record Chaser','The Messi-Ronaldo Problem','The Era-Defining Monster','The Golden Ball Dynasty']);
+ if(p.ballonDors>=8&&ucl>=4&&worldCups>=1)return picked(['The Record-Breaking GOAT','The Football Final Boss','The Man Who Completed Football','The Ballon D'Goat Overlord','The Impossible Save']);
+ if(p.ballonDors>=6)return picked(['The Golden Record Chaser','The Messi-Ronaldo Problem','The Era-Defining Monster','The Ballon D'Goat Dynasty']);
  if(p.ballonDors>=4)return picked(['The Dynasty Player','The Golden Era King','The Trophy Cabinet Problem','The Decade Belonged To Him']);
  if(p.ballonDors>=2&&ucl>=2)return picked(['The European Golden God','The Big Night King','The European Champions Cup Menace','The Knockout Round Nightmare']);
  if(p.ballonDors>=1&&worldCups>=1)return picked(['The Nation’s Golden Son','The World Championship Ballon D’Goat Hero','The Flag-Carrying Genius','The Tournament Immortal']);
- if(p.ballonDors>=1)return picked(["The Ballon D'Goat Monster",'The Golden Ball Winner','The One-Time Best in the World','The Peak Season Freak','The Golden Year Hero']);
+ if(p.ballonDors>=1)return picked(["The Ballon D'Goat Monster",'The Ballon D'Goat Winner','The One-Time Best in the World','The Peak Season Freak','The Golden Year Hero']);
  if(p.ballonDorNearMisses>=3)return picked(['The Nearly Golden Man','The Ballon D’Goat Bridesmaid','The Almost-Era Player','The Golden Door Nearly Opened']);
  if(p.ballonDorNearMisses>=1&&peak>=93)return picked(['The Golden Near Miss','The Robbed by Voters Shout','The Podium Without the Crown','The One They Argued About Online']);
 
