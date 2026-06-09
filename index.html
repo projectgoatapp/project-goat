@@ -1374,6 +1374,105 @@ function eligibleCrossroads(p,age){
 let locks={overall:false,potential:false,club:false}; // legacy placeholder; field rerolls now replace locks
 let state={rolls:0,player:null,running:false,crossroadsDone:false,pendingGoatScore:0,mode:'easy',modeRolls:0};
 
+
+// ── RELIABILITY / FAIL-SOFT HELPERS ──────────────────────────────────────────
+const ACTIVE_CAREER_KEY='project_goat_active_career_v1';
+
+function saveCareerState(reason='checkpoint'){
+ try{
+  if(!state.player)return;
+  const p=state.player;
+  const snapshot={
+   version:1,
+   reason,
+   savedAt:Date.now(),
+   running:!!state.running,
+   mode:state.mode,
+   player:p,
+   currentAge:p.age||16,
+   seasons:p.seasons||0,
+   summaryReady:!!p.careerEnded
+  };
+  localStorage.setItem(ACTIVE_CAREER_KEY,JSON.stringify(snapshot));
+ }catch(err){
+  console.warn('Project GOAT: career save failed',err);
+ }
+}
+function clearCareerState(){
+ try{localStorage.removeItem(ACTIVE_CAREER_KEY);}catch(err){console.warn('Project GOAT: clear save failed',err);}
+}
+function showRecoveryCard(message='The save hit a dodgy patch. You can keep going.',detail=''){
+ try{
+  const timeline=document.getElementById('timeline');
+  if(!timeline)return;
+  if(document.getElementById('projectGoatRecoveryCard'))return;
+  const div=document.createElement('div');
+  div.id='projectGoatRecoveryCard';
+  div.className='beat-card major-injury';
+  div.style.cssText='--club1:rgba(255,101,120,.18);--club2:rgba(255,101,120,.04);--clubAccent:#ff6578;';
+  div.innerHTML=
+   '<div class="club-ribbon"><span class="club-dot" style="background:var(--red);box-shadow:0 0 18px var(--red)"></span><span style="color:var(--red)">Save Recovery</span></div>'+ 
+   '<div class="beat-head"><div class="age-pill milestone" style="background:linear-gradient(135deg,#ff6578,#a02030);color:#fff">!</div><div><div class="beat-title">THE SIM HAD A WOBBLE</div><div class="beat-text">'+message+(detail?'<br><br><span style="color:var(--dim);font-size:12px">'+detail+'</span>':'')+'</div></div></div>'+ 
+   '<button class="btn gold" id="recoveryContinueBtn" style="margin-top:12px">Continue career</button>';
+  timeline.appendChild(div);
+  const btn=document.getElementById('recoveryContinueBtn');
+  if(btn)btn.onclick=()=>{div.remove();document.querySelectorAll('button').forEach(b=>{b.disabled=false;b.style.opacity='';});};
+  div.scrollIntoView({behavior:'smooth',block:'nearest'});
+ }catch(err){console.warn('Project GOAT: recovery card failed',err);}
+}
+function nudgeWaitingDecision(label='decision'){
+ try{
+  document.querySelectorAll('.transfer-choice-btns button,.fork-btns button,#diceRollBtn,#spikeRollBtn,.season-advance-btn').forEach(btn=>{
+   if(btn&&btn.style.display!=='none'){
+    btn.disabled=false;
+    btn.style.opacity='';
+   }
+  });
+  const activeControls=document.querySelector('.transfer-choice-btns,.fork-btns') || document.getElementById('diceRollBtn') || document.getElementById('spikeRollBtn') || document.querySelector('.season-advance-btn');
+  const card=activeControls?activeControls.closest('.beat-card')||activeControls.closest('.season-divider')||document.getElementById('timeline'):document.getElementById('timeline');
+  if(card&&!card.querySelector('.decision-waiting-note')){
+   const note=document.createElement('div');
+   note.className='beat-text decision-waiting-note';
+   note.style.cssText='margin-top:12px;color:var(--gold);font-weight:1000';
+   note.textContent='Still waiting for your choice. Tap an option to continue.';
+   card.appendChild(note);
+  }
+ }catch(err){console.warn('Project GOAT: waiting nudge failed for '+label,err);}
+}
+function withTimeout(promise,ms,fallback,label='decision'){
+ // Safety watchdog only. It never makes a player choice and never resolves the flow for them.
+ let settled=false;
+ const timer=setTimeout(()=>{
+  if(settled)return;
+  console.warn('Project GOAT: '+label+' is still waiting for player input');
+  saveCareerState('waiting-'+String(label).replace(/\s+/g,'-'));
+  nudgeWaitingDecision(label);
+ },ms);
+ return Promise.resolve(promise).then(value=>{
+  settled=true;
+  clearTimeout(timer);
+  return value;
+ }).catch(err=>{
+  settled=true;
+  clearTimeout(timer);
+  console.error('Project GOAT: '+label+' failed',err);
+  saveCareerState('failed-'+String(label).replace(/\s+/g,'-'));
+  showRecoveryCard('Something broke during '+label+'. Your career checkpoint was saved. Try the visible option again, or restart this career if it cannot continue.',String(err&&err.message||err));
+  throw err;
+ });
+}
+window.addEventListener('error',event=>{
+ console.error('Project GOAT error:',event.error||event.message);
+ saveCareerState('window-error');
+ showRecoveryCard('The game hit a script error, but your current career checkpoint was saved.',String(event.message||''));
+});
+window.addEventListener('unhandledrejection',event=>{
+ console.error('Project GOAT promise error:',event.reason);
+ saveCareerState('promise-error');
+ showRecoveryCard('A career event failed to finish, but your current career checkpoint was saved.',String((event.reason&&event.reason.message)||event.reason||''));
+});
+window.addEventListener('pagehide',()=>saveCareerState('pagehide'));
+
 // ── MODE MATRIX ───────────────────────────────────────────────────────────────
 const MODE_CONFIG={
  easy:{name:'Easy',desc:'Pick your position and starting-club continent. Potential is spicy, injuries are kinder, and THE GOAT is actually achievable.',maxRerolls:5,maxLocks:2,positionMode:'pick',continentMode:'pick',potentialFloor:85,potentialBonus:7,injuryMult:.5,goatBonus:18,goatThreshold:80,needsBallonForGoat:false,rules:['Pick position','Pick continent','5 rerolls','2 field rerolls saved','85+ potential','Injuries halved','GOAT +18','GOAT at 80']},
@@ -1799,22 +1898,36 @@ function rollDiceOfFate(stakeText){
   $('timeline').appendChild(div);
   div.scrollIntoView({behavior:'smooth',block:'end'});
   const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  let diceSettled=false;
+  const settleDice=result=>{
+   if(diceSettled)return;
+   diceSettled=true;
+   $('diceFace').textContent=faces[result-1];
+   $('diceResult').style.display='block';
+   $('diceResult').textContent='Rolled a '+result;
+   $('diceRollBtn').style.display='none';
+   playLock();HAP.lock();
+   setTimeout(()=>resolve(result),700);
+  };
+  const diceSafety=setTimeout(()=>{
+   if(diceSettled)return;
+   const btn=$('diceRollBtn');
+   if(btn){btn.disabled=false;btn.textContent='Roll the Dice';btn.style.opacity='';}
+   showRecoveryCard('The dice is still waiting for your roll. No result has been chosen for you. Tap Roll the Dice to continue.');
+  },20000);
   $('diceRollBtn').onclick=()=>{
    $('diceRollBtn').disabled=true;
    $('diceRollBtn').textContent='Rolling…';
    let rolls=0;
    const spin=setInterval(()=>{
+    if(diceSettled){clearInterval(spin);return;}
     $('diceFace').textContent=faces[Math.floor(Math.random()*6)];
     rolls++;
     if(rolls>14){
      clearInterval(spin);
+     clearTimeout(diceSafety);
      const result=Math.floor(Math.random()*6)+1;
-     $('diceFace').textContent=faces[result-1];
-     $('diceResult').style.display='block';
-     $('diceResult').textContent='Rolled a '+result;
-     $('diceRollBtn').style.display='none';
-     playLock();HAP.lock();
-     setTimeout(()=>resolve(result),700);
+     settleDice(result);
     }
    },80);
   };
@@ -2970,6 +3083,10 @@ function seasonLabelForAge(age){
  const startYear=2008+age;
  return String(startYear).slice(-2)+'/'+String(startYear+1).slice(-2);
 }
+function seasonFullLabelForAge(age){
+ const startYear=2008+age;
+ return startYear+'-'+(startYear+1);
+}
 function setCareerSimulating(isSimulating,age){
  const ticker=$('seasonTicker'),proceed=$('retireProceedBtn');
  if(ticker)ticker.style.display=isSimulating?'flex':'none';
@@ -2995,6 +3112,7 @@ function waitForSeasonAdvance(age){
    btn.disabled=true;
    btn.textContent='Simulating '+label+'…';
    btn.style.opacity='.5';
+   toast('Simulating '+seasonFullLabelForAge(age)+' Season');
    if($('tickerSeason'))$('tickerSeason').textContent=label;
    setTimeout(()=>{
     btn.remove();
@@ -3044,6 +3162,7 @@ async function startCareer(){
    '<div style="font-size:14px;font-weight:1000;color:var(--blue);margin-bottom:4px">'+p.prediction.label+'</div>'+
    '<div style="font-size:13px;color:var(--muted);font-weight:400;line-height:1.6">'+p.prediction.line+'</div>'+
   '</div>';
+ saveCareerState('career-started');
  addBeat({age:16,title:'📋 Scout report: '+p.first+' '+p.last,text:scoutCardHtml+' <span style="font-size:11px;color:var(--dim)">'+nationLabel(p.nation)+' · '+p.position+' · '+p.personality.name+'</span>',apps:0,goals:0,assists:0,ovr:0,rating:0,clubName:p.club.name,noStats:true});
  await sleep(900);
  if(isFirstTeamReady(p,16,p.club)){
@@ -3071,7 +3190,8 @@ async function startCareer(){
   if(age===crossroadsAge&&!state.crossroadsDone){
    state.crossroadsDone=true;
    await sleep(1600);
-   await showCrossroads(crossEvent);
+   await withTimeout(showCrossroads(crossEvent),25000,null,'crossroads decision');
+   saveCareerState('crossroads');
    await sleep(1200);
   }
   // Early-career fork: fired at start of season (before sim) if OVR too low for the club
@@ -3079,7 +3199,8 @@ async function startCareer(){
   if(!state.loanForkDone&&age>=16&&age<=22&&p.club.tier>=4&&p.overall<loanBar){
    state.loanForkDone=true;
    await sleep(1400);
-   await showLoanFork(p);
+   await withTimeout(showLoanFork(p),25000,null,'loan decision');
+   saveCareerState('loan-fork');
    await sleep(1000);
   }
   // Dev club: push loan immediately if well below bar (fires from age 16)
@@ -3088,7 +3209,8 @@ async function startCareer(){
   if(!state.loanForkDone&&age>=16&&age<=18&&DEV_CLUBS.has(p.club.name)&&(devBarHere-p.overall)>=devGapTrigger){
    state.loanForkDone=true;
    await sleep(1400);
-   await showDevClubLoanFork(p);
+   await withTimeout(showDevClubLoanFork(p),25000,null,'development loan decision');
+   saveCareerState('dev-loan-fork');
    await sleep(1000);
   }
   const s=simulateSeason(age);
@@ -3101,7 +3223,7 @@ async function startCareer(){
   // SPIKE: if a breakout was rolled this season, show dice and apply the result
   if(s.spike){
    await sleep(1200);
-   const diceResult=await showSpikeRoll(p,age,s.spike,s.clubName);
+   const diceResult=await withTimeout(showSpikeRoll(p,age,s.spike,s.clubName),25000,null,'development spike roll');
    // Apply the bonus to overall now
    const bonusApplied=diceResult.bonus;
    p.overall=clamp(p.overall+bonusApplied,32,99);
@@ -3114,12 +3236,14 @@ async function startCareer(){
   addBeat({age,title:s.title,text:s.text,apps:s.apps,goals:s.goals,assists:s.assists,ovr:s.ovrDelta,rating:s.rating,finish:s.finish,earnings:s.earnings,awardsText:s.awards.length?s.awards.join(', '):'',trophiesText:s.trophies.length?s.trophies.join(', '):'',clubName:s.clubName,currentOvr:state.player.overall,trophyCount:s.trophies.length,awardCount:s.awards.length});
   setCareerSimulating(false,age);
   addSeasonDivider(age,s);
+  saveCareerState('season-complete');
   if(state.player.careerEnded)break;
   // Transfer agency: show choice AFTER season divider so player sees the season first
   if(p._pendingTransfer){
    p._pendingTransfer=false;
    await sleep(600);
-   await showTransferChoice(p,age);
+   await withTimeout(showTransferChoice(p,age),30000,null,'transfer decision');
+   saveCareerState('transfer-choice');
    await sleep(400);
   }
   // Benchwarming fork — AFTER simulateSeason so _benchYears is current
@@ -3129,7 +3253,8 @@ async function startCareer(){
   if(!p._benchwarmForkDone&&(p._benchYears||0)>=benchThreshold&&age>=17&&age<=32){
    p._benchwarmForkDone=true;
    await sleep(1200);
-   await showBenchwarmFork(p);
+   await withTimeout(showBenchwarmFork(p),30000,null,'benchwarmer decision');
+   saveCareerState('benchwarm-fork');
    await sleep(1000);
   }
   // Season pauses here until the player starts the next one.
@@ -3150,6 +3275,7 @@ async function startCareer(){
  setTimeout(()=>legacyBtn.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
  await new Promise(res=>{legacyBtn.onclick=()=>{legacyBtn.disabled=true;legacyBtn.remove();res();};});
  showSummary();
+ clearCareerState();
 }
 
 // ── GOAT SCORING ──────────────────────────────────────────────────────────────
@@ -3232,12 +3358,12 @@ function legacyTitle(p){
  }
 
  // Absolute top-end dynasties.
- if(p.ballonDors>=8&&ucl>=4&&worldCups>=1)return picked(['The Record-Breaking GOAT','The Football Final Boss','The Man Who Completed Football',"The Ballon D\'Goat Overlord",'The Impossible Save']);
- if(p.ballonDors>=6)return picked(['The Golden Record Chaser','The Messi-Ronaldo Problem','The Era-Defining Monster',"The Ballon D\'Goat Dynasty"]);
+ if(p.ballonDors>=8&&ucl>=4&&worldCups>=1)return picked(['The Record-Breaking GOAT','The Football Final Boss','The Man Who Completed Football',"The Ballon D'Goat Overlord",'The Impossible Save']);
+ if(p.ballonDors>=6)return picked(['The Golden Record Chaser','The Messi-Ronaldo Problem','The Era-Defining Monster',"The Ballon D'Goat Dynasty"]);
  if(p.ballonDors>=4)return picked(['The Dynasty Player','The Golden Era King','The Trophy Cabinet Problem','The Decade Belonged To Him']);
  if(p.ballonDors>=2&&ucl>=2)return picked(['The European Golden God','The Big Night King','The European Champions Cup Menace','The Knockout Round Nightmare']);
  if(p.ballonDors>=1&&worldCups>=1)return picked(['The Nation’s Golden Son','The World Championship Ballon D’Goat Hero','The Flag-Carrying Genius','The Tournament Immortal']);
- if(p.ballonDors>=1)return picked(["The Ballon D'Goat Monster","The Ballon D\'Goat Winner",'The One-Time Best in the World','The Peak Season Freak','The Golden Year Hero']);
+ if(p.ballonDors>=1)return picked(["The Ballon D'Goat Monster","The Ballon D'Goat Winner",'The One-Time Best in the World','The Peak Season Freak','The Golden Year Hero']);
  if(p.ballonDorNearMisses>=3)return picked(['The Nearly Golden Man','The Ballon D’Goat Bridesmaid','The Almost-Era Player','The Golden Door Nearly Opened']);
  if(p.ballonDorNearMisses>=1&&peak>=93)return picked(['The Golden Near Miss','The Robbed by Voters Shout','The Podium Without the Crown','The One They Argued About Online']);
 
@@ -3506,6 +3632,7 @@ $('continentSelect').onchange=()=>{if(state.mode==='easy')resetScoutVisuals();};
 if($('primaryBtn'))$('primaryBtn').onclick=()=>$('primaryBtn').textContent==='Start Career'?startCareer():scout({fresh:true});
 if($('someoneElseBtn'))$('someoneElseBtn').onclick=()=>{updateActionOffset();scout({fresh:true});};
 $('againBtn').onclick=()=>{
+ clearCareerState();
  state.player=null;state.modeRolls=0;locks={overall:false,potential:false,club:false};$('primaryBtn').textContent='Scout Prospect';if($('someoneElseBtn'))(()=>{const _s=$('someoneElseBtn');if(_s)_s.style.display='none'})();['rerollOverall','rerollPotential','rerollClub'].forEach(id=>{if($(id)){ $(id).style.display='none';$(id).disabled=true; }});
  $('shareBtn').style.display='none';
  ['overallVal','potentialVal','techVal','physVal','mentVal'].forEach(id=>$(id).textContent='—');
