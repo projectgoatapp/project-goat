@@ -2465,7 +2465,7 @@ async function showSpikeRoll(p,age,spike,clubName){
 }
 
 // ── NARRATIVE BEATS ────────────────────────────────────────────────────────────
-function pickNarrativeBeat(p,age,apps,goals,assists,rating,ovrDelta,seasonClub){
+function pickNarrativeBeat(p,age,apps,goals,assists,rating,ovrDelta,seasonClub,_wasOnLoan=false){
  const name=p.first;const club=seasonClub.name;
  const atk=['Striker','Winger','Attacking Midfielder'].includes(p.position);
  const beats=[];
@@ -2774,7 +2774,7 @@ function simulateSeason(age){
  // ── Narrative beat pool: extra flavour cards ──────────────────────────────────
  const narrativeChance=p.club.tier>=5?.32:.22;
  if(Math.random()<narrativeChance&&!_wasOnLoan){
-  const nb=pickNarrativeBeat(p,age,apps,goals,assists,rating,ovrDelta,seasonClub);
+  const nb=pickNarrativeBeat(p,age,apps,goals,assists,rating,ovrDelta,seasonClub,_wasOnLoan);
   if(nb)specialBeats.push(nb);
  }
  const title=cleanAwards.includes("Ballon D'Goat")?'The golden one':headline(p,age,apps,goals,assists,rating,ovrDelta);
