@@ -287,21 +287,24 @@
     .share-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:90;display:none;align-items:center;justify-content:center;padding:16px;animation:fadeIn .25s ease}
     .share-overlay.show{display:flex}
     .share-card-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:360px}
-    .share-card{width:100%;background:linear-gradient(145deg,#0a1f10,#061209);border:1px solid rgba(89,255,140,.25);border-radius:20px;padding:22px;position:relative;overflow:hidden}
-    .share-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 10%,rgba(89,255,140,.18),transparent 55%),radial-gradient(circle at 10% 90%,rgba(255,211,106,.12),transparent 50%);pointer-events:none}
-    .share-kicker{font-size:9px;letter-spacing:.3em;font-weight:1000;color:var(--green);text-transform:uppercase;margin-bottom:8px}
-    .share-name{font-size:30px;font-weight:1000;letter-spacing:-.05em;text-transform:uppercase;line-height:.9;margin-bottom:4px}
-    .share-legacy{font-size:13px;color:var(--gold);font-weight:1000;margin-bottom:12px}
-    .share-score-row{display:flex;align-items:flex-end;gap:8px;margin-bottom:14px}
+    .share-card{--club1:rgba(89,255,140,.18);--club2:rgba(255,211,106,.10);--clubAccent:#59ff8c;width:100%;background:linear-gradient(145deg,color-mix(in srgb,var(--club1) 50%, #0a1f10),#061209 72%);border:1px solid color-mix(in srgb,var(--clubAccent) 40%, rgba(255,255,255,.14));border-radius:20px;padding:22px;position:relative;overflow:hidden;box-shadow:0 18px 70px color-mix(in srgb,var(--clubAccent) 16%, rgba(0,0,0,.35))}
+    .share-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 82% 12%,color-mix(in srgb,var(--clubAccent) 34%, transparent),transparent 52%),radial-gradient(circle at 12% 92%,color-mix(in srgb,var(--club1) 90%, transparent),transparent 46%),linear-gradient(130deg,transparent 54%,color-mix(in srgb,var(--clubAccent) 10%, transparent),transparent 76%);pointer-events:none}
+    .share-card:after{content:"";position:absolute;inset:0;border-radius:20px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--clubAccent) 18%, rgba(255,255,255,.10)),inset 0 0 60px color-mix(in srgb,var(--clubAccent) 10%, transparent);pointer-events:none;opacity:.9}
+    .share-kicker{font-size:9px;letter-spacing:.3em;font-weight:1000;color:var(--green);text-transform:uppercase;margin-bottom:8px;position:relative;z-index:1}
+    .share-name{font-size:30px;font-weight:1000;letter-spacing:-.05em;text-transform:uppercase;line-height:.9;margin-bottom:6px;position:relative;z-index:1;max-width:78%}
+    .share-subline{font-size:13px;color:var(--muted);font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;position:relative;z-index:1}
+    .share-legacy{font-size:13px;color:var(--gold);font-weight:1000;margin-bottom:12px;position:relative;z-index:1}
+    .share-peak-chip{position:absolute;top:18px;right:18px;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;letter-spacing:.06em;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,sans-serif;z-index:2;box-shadow:0 10px 28px rgba(0,0,0,.18)}
+    .share-score-row{display:flex;align-items:flex-end;gap:8px;margin-bottom:14px;position:relative;z-index:1}
     .share-score{font-size:64px;font-weight:1000;line-height:.85;color:var(--gold);letter-spacing:-.04em}
     .share-score-label{font-size:11px;color:var(--muted);font-weight:900;padding-bottom:6px}
     .share-status{font-size:14px;color:var(--green);font-weight:1000;letter-spacing:.06em;text-transform:uppercase}
-    .share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
-    .share-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:10px;padding:8px 5px;text-align:center}
+    .share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px;position:relative;z-index:1}
+    .share-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:10px;padding:8px 5px;text-align:center;backdrop-filter:blur(3px)}
     .share-stat small{display:block;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:1000}
     .share-stat b{font-size:18px;color:var(--text)}
     .share-stat.gold b{color:var(--gold)}
-    .share-footer{margin-top:12px;font-size:9px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;line-height:1.35}
+    .share-footer{margin-top:12px;font-size:9px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;line-height:1.35;position:relative;z-index:1}
     .share-footer a{display:block;color:var(--gold);text-decoration:none;font-weight:1000;letter-spacing:.16em;margin-bottom:6px}
     .share-footer .legal{display:block;color:rgba(242,255,244,.46);font-size:7px;letter-spacing:.10em;text-transform:none;line-height:1.35}
     .share-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
@@ -690,7 +693,9 @@
   <div class="share-card-wrap">
     <div class="share-card" id="shareCardEl">
       <div class="share-kicker">Project GOAT • Career Ended</div>
+      <div class="share-peak-chip" id="sc-peak">Peak OVR —</div>
       <div class="share-name" id="sc-name">—</div>
+      <div class="share-subline" id="sc-position">—</div>
       <div class="share-legacy" id="sc-legacy">—</div>
       <div class="share-score-row">
         <div class="share-score" id="sc-score">—</div>
@@ -2191,12 +2196,13 @@ function clubFinish(p,rating,apps){
  b=clamp(b,1,20);
  if(b===1)return'1st';if(b===2)return'2nd';if(b===3)return'3rd';return b+'th';
 }
-function cupNameForClub(c){
- if(c.tier>=6)return pick(['European Champions Cup','League Title','Global Club Cup','Domestic Cup']);
- if(c.tier>=5)return pick(['League Title','Domestic Cup','European Shield','Super Cup']);
- if(c.tier>=4)return pick(['Domestic Cup','Continental Cup','League Cup','Super Cup']);
- return pick(['Promotion Play-off','Domestic Cup','League Cup','Regional Shield']);
+function cupOptionsForClub(c){
+ if(c.tier>=6)return ['European Champions Cup','League Title','Global Club Cup','Domestic Cup'];
+ if(c.tier>=5)return ['League Title','Domestic Cup','European Shield','Super Cup'];
+ if(c.tier>=4)return ['Domestic Cup','Continental Cup','League Cup','Super Cup'];
+ return ['Promotion Play-off','Domestic Cup','League Cup','Regional Shield'];
 }
+function cupNameForClub(c){return pick(cupOptionsForClub(c));}
 function annualSalary(p,age,rating=6.8){
  const tb={1:.05,2:.18,3:.55,4:1.6,5:4.8,6:8.5}[p.club.tier]||1;
  const inf=1+(age-16)*.04;
@@ -2247,8 +2253,14 @@ function maybeTrophies(p,age,rating,goals,assists,finish){
  if(p.crossroadsTaken==='trophyBoost')ch+=.12;
  if(Math.random()<ch){
   const count=Math.random()<.16&&p.club.tier>=5?2:1;
-  for(let i=0;i<count;i++){
-   const trophy=cupNameForClub(p.club);p.trophies++;
+  const alreadyThisSeason=new Set((p.trophyLog||[]).filter(t=>t.age===age&&t.club===p.club.name).map(t=>t.trophy));
+  const options=cupOptionsForClub(p.club).filter(t=>!alreadyThisSeason.has(t));
+  for(let i=0;i<count&&options.length;i++){
+   const idx=rnd(0,options.length-1);
+   const trophy=options.splice(idx,1)[0];
+   if(alreadyThisSeason.has(trophy))continue;
+   alreadyThisSeason.add(trophy);
+   p.trophies++;
    p.trophyLog.push({age,season:`Age ${age}`,club:p.club.name,trophy,finish,reason:`${p.first} contributed ${Math.max(goals+assists,0)} goal involvements and averaged ${rating.toFixed(2)} while ${p.club.name} finished ${finish}.`});
    won.push(trophy);
   }
@@ -2322,6 +2334,46 @@ function internationalTrophyText(p,trophy){
  return `<strong>${trophy.toUpperCase()}.</strong> ${nationLabel(p.nation)} lift a major international trophy. The flag discourse gets unbearable, in the best way.`;
 }
 
+function spectacularGoalStory(p,age,award){
+ const name=p.first;
+ const club=p.club?.name||'his club';
+ const setups=[
+  `${name} catches a half-clearance on the drop from miles out. The ball disappears through a crowd, kisses the bar and lands in the top corner. Nobody celebrates for half a second because the brain needs buffering time.`,
+  `Corner half-cleared. One touch out of his feet, second touch an absolute thunderbastard. The keeper does the little doomed hop. ${club} fans immediately start lying about where they were sitting.`,
+  `${name} turns two defenders near the touchline, keeps going when the sensible pass is on, then bends one across goal from a stupid angle. Bad decision. Perfect goal.`,
+  `A counterattack turns messy, the ball sits up awkwardly, and ${name} improvises a falling volley that looks illegal in real time and even worse on replay.`,
+  `Free-kick from the sort of range where the commentator says "too far out". Naturally, ${name} sends it over the wall, under the bar and directly into goal compilation folklore.`,
+  `${name} receives it with his back to goal, flicks it round the marker, spins, and lashes it in before anyone has finished shouting "man on". Career mode nonsense in human form.`,
+  `A cross arrives slightly behind him, so ${name} turns it into a bicycle kick because apparently normal finishing is for cowards. The stadium makes the noise a kettle makes before exploding.`
+ ];
+ const suffix=award.includes('Worldie Gong')
+  ? ` <strong>${award}</strong> secured. The goal gets replayed so often the opposition file a complaint.`
+  : ` <strong>${award}</strong> sorted. Goal of the season panels love this sort of nonsense.`;
+ return pick(setups)+suffix;
+}
+function maybeGoalAwardCandidates(p,age,apps,goals,assists,rating){
+ const cands=[];
+ const attacking=['Striker','Winger','Attacking Midfielder','Central Midfielder'].includes(p.position);
+ if(!attacking||apps<16||rating<7.05||goals<6)return cands;
+ let worldieChance=.018;
+ if(p.overall>=84)worldieChance+=.012;
+ if(p.overall>=90)worldieChance+=.010;
+ if(goals>=20)worldieChance+=.012;
+ if(rating>=7.55)worldieChance+=.010;
+ if(['Winger','Attacking Midfielder'].includes(p.position))worldieChance+=.006;
+ worldieChance=clamp(worldieChance,.012,.075);
+ cands.push({name:'The Worldie Gong',chance:worldieChance,why:'one goal was so stupid it needed its own committee',goalAward:true,rareGoal:true});
+
+ let seasonGoalChance=.055;
+ if(goals>=12)seasonGoalChance+=.018;
+ if(assists>=10)seasonGoalChance+=.006;
+ if(p.overall>=78)seasonGoalChance+=.010;
+ if(rating>=7.35)seasonGoalChance+=.012;
+ seasonGoalChance=clamp(seasonGoalChance,.035,.13);
+ cands.push({name:pick(['Goalden Wonder of the Season','Screamer of the Season','Net Ripper of the Season','Absolute Scenes Goal Award','Goal of the Season-ish']),chance:seasonGoalChance,why:'one finish had the highlights editor giggling into the timeline',goalAward:true});
+ return cands;
+}
+
 function maybeAwards(p,age,apps,goals,assists,rating,finish){
  const won=[];const gc=goals+assists;const eliteClub=p.club.tier>=5;const cands=[];
  const defensive=['Goalkeeper','Centre-back','Defensive Midfielder'].includes(p.position);
@@ -2335,6 +2387,7 @@ function maybeAwards(p,age,apps,goals,assists,rating,finish){
  if(rating>=7.32&&apps>24)cands.push({name:'League Player of the Season',chance:.38,why:`a ${rating.toFixed(2)} average rating made him impossible to ignore`});
  if(rating>=7.48&&apps>24&&eliteClub)cands.push({name:'European Champions Cup Player of the Tournament',chance:.20,why:'the big European nights became his personal trailer reel'});
  if(p.overall>=84&&rating>=7.40&&gc>=20&&eliteClub)cands.push({name:'World Select XI',chance:.34,why:'the season crossed from excellent into screenshotted-and-sent-to-group-chats'});
+ maybeGoalAwardCandidates(p,age,apps,goals,assists,rating).forEach(c=>cands.push(c));
 
  // Ballon D'Goat is now easier to enter, but repeated wins are still the true GOAT ladder.
  // Absolute GOAT territory should need roughly six golden balls, not just one 99 OVR season.
@@ -2373,13 +2426,16 @@ function maybeAwards(p,age,apps,goals,assists,rating,finish){
  if(rating>=7.18&&apps>26)cands.push({name:`${p.club.name} Fans' Player of the Year`,chance:.36,why:'the crowd decided he was their little problem child'});
  if(finish==='1st'&&rating>7.15)cands.push({name:'Title Hero Award',chance:.30,why:'he was central to a title-winning year'});
  if(p.caps>30&&gc>=18&&rating>7.18)cands.push({name:`${p.nation} Player of the Year`,chance:.24,why:'the national team started treating him like the plan, not the option'});
- const wonNames=new Set();
+ const wonNames=new Set();let wonGoalAward=false;
  cands.forEach(c=>{
+  if(c.goalAward&&wonGoalAward)return;
   const roll=Math.random();
   if(!wonNames.has(c.name)&&roll<c.chance){
    wonNames.add(c.name);p.awards++;
    if(c.bd)p.ballonDors++;
-   p.awardLog.push({age,season:`Age ${age}`,club:p.club.name,award:c.name,apps,goals,assists,rating:rating.toFixed(2),finish,reason:`Won after ${apps} apps, ${goals} goals, ${assists} assists and ${rating.toFixed(2)} average. ${c.why}.`});
+   if(c.goalAward)wonGoalAward=true;
+   const goalStory=c.goalAward?spectacularGoalStory(p,age,c.name):null;
+   p.awardLog.push({age,season:`Age ${age}`,club:p.club.name,award:c.name,apps,goals,assists,rating:rating.toFixed(2),finish,goalAward:!!c.goalAward,rareGoal:!!c.rareGoal,goalStory,reason:c.goalAward?goalStory:`Won after ${apps} apps, ${goals} goals, ${assists} assists and ${rating.toFixed(2)} average. ${c.why}.`});
    won.push(c.name);
   } else if(c.bd&&roll<Math.min(.96,bdChance*2.2)&&roll>=c.chance){
    p.ballonDorNearMisses=(p.ballonDorNearMisses||0)+1;
@@ -2404,21 +2460,41 @@ function positionOutputProfile(position){
  };
  return profiles[position]||profiles['Central Midfielder'];
 }
-function realisticOutput(p,apps,age){
+function dominanceAgainstClub(p,seasonClub){
+ const club=seasonClub||p.club||{};
+ const ovrGap=Math.max(0,(p.overall||0)-clubOvrCeiling(club));
+ const tierGap=Math.max(0,desiredTierForOverall(p.overall||0)-((club&&club.tier)||1));
+ const score=clamp((ovrGap/18)+(tierGap*.18),0,1.35);
+ return{ovrGap,tierGap,score};
+}
+function realisticOutput(p,apps,age,seasonClub=p.club){
  const prof=positionOutputProfile(p.position);
- if(apps<=0)return{goals:0,assists:0};
+ if(apps<=0)return{goals:0,assists:0,dominance:dominanceAgainstClub(p,seasonClub)};
  const minutesFactor=apps/38;
  const elite=clamp((p.overall-72)/28,0,1);
  const prime=age>=23&&age<=30?1:age<19?.58:age<22?.78:age>35?.58:age>32?.76:.9;
+ const dom=dominanceAgainstClub(p,seasonClub);
+ const dominance=dom.score;
  const isAttacker=['Striker','Winger','Attacking Midfielder'].includes(p.position);
  const isStriker=p.position==='Striker';
  const isWinger=p.position==='Winger';
  const isAM=p.position==='Attacking Midfielder';
  const gMin=prof.g[0],gMax=prof.g[1],aMin=prof.a[0],aMax=prof.a[1];
 
- // Base season: grounded output. A very good 86 OVR striker should be around 18–26 goals in strong seasons, not 45 every year.
+ // Base season: grounded output at the right level, but dominant players should bully weaker leagues.
  let gBase=(gMin+(gMax-gMin)*(0.16+elite*.66))*minutesFactor*prime;
  let aBase=(aMin+(aMax-aMin)*(0.18+elite*.55))*minutesFactor*prime;
+
+ // Big fish, smaller pond. If a 90+ OVR attacker is still in a tier 2/3/4 league, the output should look illegal.
+ if(isAttacker&&dominance>.05){
+  const leagueBully=1+(dominance*(isStriker?.72:isWinger?.48:.34));
+  gBase*=leagueBully;
+  aBase*=1+(dominance*(isStriker?.16:.34));
+  if(dominance>=.55&&apps>=18){
+   const bullyFloor=Math.round(apps*(isStriker?.88:isWinger?.52:.38)*clamp(.72+dominance*.42,.78,1.24));
+   gBase=Math.max(gBase,bullyFloor);
+  }
+ }
 
  // True GOAT archetype: only the absurd 95–100 band gets Messi/Ronaldo style prime output.
  if(isAttacker&&p.overall>=95&&age>=22&&age<=32){
@@ -2433,6 +2509,7 @@ function realisticOutput(p,apps,age){
  let freakGoalBoost=0;
  if(isAttacker&&age>=22&&age<=31&&p.overall>=92){
   let chance=p.overall>=98?.13:p.overall>=96?.09:p.overall>=94?.055:.025;
+  if(dominance>=.55)chance*=1.55;
   if((p.mode||state.mode)==='easy')chance*=1.25;
   if(Math.random()<chance){
    freakGoalBoost=isStriker?rnd(6,14):isWinger?rnd(4,10):rnd(3,7);
@@ -2456,18 +2533,21 @@ function realisticOutput(p,apps,age){
   else if(p.overall<98)goalCeil=Math.min(goalCeil,54);
   else goalCeil=Math.max(goalCeil,62);
   if(p.overall>=100)goalCeil=72;
+  if(dominance>=.45)goalCeil=Math.max(goalCeil,Math.round(apps*1.28));
  }else if(isWinger){
   if(p.overall<90)goalCeil=Math.min(goalCeil,24);
   else if(p.overall<95)goalCeil=Math.min(goalCeil,30);
   else if(p.overall>=98)goalCeil=Math.max(goalCeil,42);
+  if(dominance>=.45)goalCeil=Math.max(goalCeil,Math.round(apps*.82));
  }else if(isAM){
   if(p.overall<90)goalCeil=Math.min(goalCeil,18);
   else if(p.overall>=96)goalCeil=Math.max(goalCeil,30);
+  if(dominance>=.45)goalCeil=Math.max(goalCeil,Math.round(apps*.62));
  }
 
  goals=clamp(goals,0,goalCeil);
- assists=clamp(assists,0,prof.assistCeil);
- return{goals,assists};
+ assists=clamp(assists,0,Math.max(prof.assistCeil,Math.round(prof.assistCeil*(1+dominance*.25))));
+ return{goals,assists,dominance:dom};
 }
 function absoluteOverallCap(p,age){
  const ucl=p.trophyLog.filter(t=>t.trophy.includes('European Champions Cup')).length;
@@ -2779,12 +2859,13 @@ function simulateSeason(age){
  const mid=['Central Midfielder','Defensive Midfielder'].includes(p.position);
  const def=['Centre-back','Full-back'].includes(p.position);
  const gk=p.position==='Goalkeeper';
- const output=realisticOutput(p,apps,age);
+ const output=realisticOutput(p,apps,age,seasonClub);
  let goals=output.goals;
  let assists=output.assists;
  if(p.crossroadsTaken==='intFirst')assists=Math.max(0,assists-1);
  const weightedOutput=goals+(assists*.55);
- const rawRating=clamp(5.7+(p.overall-50)/35+(weightedOutput)/Math.max(apps,1)*.30+rnd(-20,25)/100,5.7,9.15);
+ const domRatingBoost=output.dominance?clamp(output.dominance.score*.32,0,.42):0;
+ const rawRating=clamp(5.7+(p.overall-50)/35+(weightedOutput)/Math.max(apps,1)*.30+domRatingBoost+rnd(-20,25)/100,5.7,9.15);
  const rating=apps<3?0:rawRating; // no rating with no appearances
  const finish=clubFinish(p,rating,apps);
 
@@ -2824,9 +2905,13 @@ function simulateSeason(age){
  });
  cleanAwards.forEach(award=>{
   const isBD=award==="Ballon D'Goat";
+  const log=(p.awardLog||[]).slice().reverse().find(a=>a.age===age&&a.award===award);
+  const isGoalAward=!!log?.goalAward;
   if(isBD){playBallonDor();HAP.ballonDor();}
   else{playTrophy();}
-  specialBeats.push({age,title:isBD?'✨ BALLON D\'GOAT':'🏅 AWARD WON',text:isBD?`<strong>BALLON D'GOAT.</strong> The envelope opens. It's his name. ${apps} apps, ${goals} goals, ${assists} assists, ${rating.toFixed(2)} average at ${seasonClub.name}. The save has gone genuinely feral.`:`<strong>${award}</strong>. ${apps} apps, ${goals} goals, ${assists} assists at ${seasonClub.name}.`,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:'major-award',clubName:seasonClub.name,isBallonDor:isBD,newsType:'award',noStats:true});
+  const awardTitle=isBD?'✨ BALLON D\'GOAT':isGoalAward?'🚀 GOAL AWARD WON':'🏅 AWARD WON';
+  const awardText=isBD?`<strong>BALLON D'GOAT.</strong> The envelope opens. It's his name. ${apps} apps, ${goals} goals, ${assists} assists, ${rating.toFixed(2)} average at ${seasonClub.name}. The save has gone genuinely feral.`:isGoalAward?`<strong>${award}.</strong> ${log.goalStory}`:`<strong>${award}</strong>. ${apps} apps, ${goals} goals, ${assists} assists at ${seasonClub.name}.`;
+  specialBeats.push({age,title:awardTitle,text:awardText,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:isGoalAward?'major-breakout':'major-award',clubName:seasonClub.name,isBallonDor:isBD,newsType:'award',noStats:true});
  });
  if(hasNearMiss){
   specialBeats.push({age,title:'💔 CLOSE. SO CLOSE.',text:`He was in the conversation. The ceremony runs long. His name is in the envelope of people who didn't make it. <strong>${p.ballonDorNearMisses} near-miss${p.ballonDorNearMisses===1?'':'es'} now.</strong> The golden door keeps not opening.`,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:'near-miss',clubName:seasonClub.name});
@@ -3424,10 +3509,56 @@ function perfVerdict(p,score,status){
  return{type:'par',label:'Met the brief',line:`Scouts predicted <strong>${p.prediction.label}</strong>. He landed almost exactly in that lane. Sensible. Annoyingly sensible.`};
 }
 
+function positionShort(pos){
+ const map={
+  'Goalkeeper':'GK',
+  'Centre-back':'CB',
+  'Full-back':'FB',
+  'Defensive Midfielder':'DM',
+  'Central Midfielder':'CM',
+  'Attacking Midfielder':'AM',
+  'Winger':'W',
+  'Striker':'ST'
+ };
+ return map[pos]||pos||'—';
+}
+function peakOverall(p){
+ return Math.max(...((p.seasonLog||[]).map(s=>s.ovr||0)),p.overall||0);
+}
+function primaryCareerClub(p){
+ const hist=(p.clubHistory||[]).map((h,i)=>({
+  club:h.club,
+  seasons:Number(h.seasons||0),
+  apps:Number(h.apps||0),
+  lastTo:Number(h.to||0),
+  idx:i
+ }));
+ if(!hist.length)return p.club?.name||'';
+ const byClub={};
+ hist.forEach(h=>{
+  if(!byClub[h.club])byClub[h.club]={club:h.club,seasons:0,apps:0,lastTo:0,idx:h.idx};
+  byClub[h.club].seasons+=h.seasons;
+  byClub[h.club].apps+=h.apps;
+  if(h.lastTo>=byClub[h.club].lastTo){byClub[h.club].lastTo=h.lastTo;byClub[h.club].idx=h.idx;}
+ });
+ return Object.values(byClub).sort((a,b)=>{
+  if(b.seasons!==a.seasons)return b.seasons-a.seasons;
+  if(b.apps!==a.apps)return b.apps-a.apps;
+  if(b.lastTo!==a.lastTo)return b.lastTo-a.lastTo;
+  return b.idx-a.idx;
+ })[0]?.club||p.club?.name||'';
+}
+
+
 // ── SHARE CARD ────────────────────────────────────────────────────────────────
 function openShareCard(p,score,status,legacy){
- $('sc-name').textContent=`${p.first} ${p.last}`;
+ const flag=nationFlags[p.nation]||'🏳️';
+ const peak=peakOverall(p);
+ const mainClub=primaryCareerClub(p);
+ $('sc-name').textContent=`${p.first} ${p.last} ${flag}`;
+ $('sc-position').textContent=positionShort(p.position);
  $('sc-legacy').textContent=legacy;
+ $('sc-peak').textContent=`Peak OVR ${peak}`;
  $('sc-score').textContent=score;
  $('sc-status').textContent=status;
  $('sc-goals').textContent=p.totalGoals;
@@ -3436,6 +3567,7 @@ function openShareCard(p,score,status,legacy){
  $('sc-trophies').textContent=p.trophies;
  $('sc-awards').textContent=p.awards;
  $('sc-bd').textContent=p.ballonDors;
+ $('shareCardEl').style.cssText=clubTheme(mainClub);
  $('shareOverlay').classList.add('show');
 }
 $('shareCloseBtn').onclick=()=>$('shareOverlay').classList.remove('show');
@@ -3445,7 +3577,8 @@ $('shareCopyBtn').onclick=async()=>{
  const p=state.player;
  if(!p)return;
     const text = `⚽ Project GOAT
-${p.first} ${p.last}
+${p.first} ${p.last} ${nationFlags[p.nation]||'🏳️'}
+${positionShort(p.position)} • Peak OVR ${peakOverall(p)}
 GOAT Score: ${state.pendingGoatScore}/100
 ${goatStatus(state.pendingGoatScore, p)}
 ${p.totalGoals}G ${p.totalAssists}A ${p.totalApps} apps
