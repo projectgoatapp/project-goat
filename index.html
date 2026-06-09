@@ -4,15 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Project GOAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#050c08;--line:rgba(129,255,174,.18);--line2:rgba(255,211,106,.38);
       --text:#f2fff4;--muted:rgba(242,255,244,.68);--dim:rgba(242,255,244,.42);
       --green:#59ff8c;--gold:#ffd36a;--red:#ff6578;--blue:#76c9ff;--purple:#d58cff;
-      --radius:22px;--shadow:0 24px 90px rgba(0,0,0,.58);
+      --radius:10px;--shadow:0 16px 60px rgba(0,0,0,.52);
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;min-height:100%;font-family:Milan Blue,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+    html,body{margin:0;min-height:100%;font-family:'Barlow',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
     body:before{content:"";position:fixed;inset:0;background:
       radial-gradient(circle at 55% -10%,rgba(89,255,140,.18),transparent 32%),
       radial-gradient(circle at 100% 20%,rgba(255,211,106,.10),transparent 26%),
@@ -22,27 +25,27 @@
     body:after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 50% 100%,transparent 60%,rgba(0,0,0,.35));pointer-events:none;z-index:-1}
     .app{width:min(520px,100%);margin:0 auto;padding:18px 16px calc(var(--actions-offset, 180px) + 34px);min-height:100svh;scroll-padding-bottom:calc(var(--actions-offset, 180px) + 24px)}
     .top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
-    .kicker{font-size:11px;letter-spacing:.28em;font-weight:1000;color:var(--green);text-transform:uppercase}
-    h1{font-size:52px;line-height:.86;margin:4px 0 0;letter-spacing:-.07em;text-transform:uppercase}
+    .kicker{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--green);text-transform:uppercase;font-family:'Barlow Condensed',sans-serif}
+    h1{font-size:52px;line-height:.86;margin:4px 0 0;letter-spacing:.01em;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;font-weight:500}
     .rolls{text-align:right;color:var(--muted);font-weight:900;font-size:12px}
-    .rolls b{display:block;color:var(--text);font-size:34px;line-height:.9}
-    .roll-title{display:block;font-size:9px;color:var(--green);letter-spacing:.18em;font-weight:1000;text-transform:uppercase;margin-top:2px}
+    .rolls b{display:block;color:var(--text);font-size:34px;line-height:.9;font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:600}
+    .rolls-label{display:block;font-size:9px;color:var(--dim);letter-spacing:.18em;font-weight:1000;text-transform:uppercase;margin-top:3px}.roll-title{display:block;font-size:9px;color:var(--green);letter-spacing:.18em;font-weight:1000;text-transform:uppercase;margin-bottom:3px}
     .screen{display:none;animation:screenIn .38s ease both}.screen.active{display:block}
     @keyframes screenIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
 
     /* MODE MATRIX */
-    .mode-panel{border:1px solid rgba(255,211,106,.22);background:linear-gradient(180deg,rgba(255,211,106,.08),rgba(89,255,140,.035));border-radius:var(--radius);padding:13px;margin-bottom:14px}
+    .mode-panel{border:1px solid rgba(255,211,106,.22);background:linear-gradient(180deg,rgba(255,211,106,.08),rgba(89,255,140,.035));border-radius:var(--radius);padding:16px;margin-bottom:14px}
     .mode-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
     .mode-title{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:1000}
-    .mode-sub{font-size:12px;color:var(--muted);font-weight:800;line-height:1.35;margin-top:3px}
+    .mode-sub{font-size:12px;color:var(--muted);font-weight:400;line-height:1.35;margin-top:3px}
     .mode-badge{border:1px solid rgba(255,211,106,.32);background:rgba(255,211,106,.08);border-radius:999px;padding:6px 9px;font-size:10px;font-weight:1000;color:var(--gold);white-space:nowrap;text-transform:uppercase;letter-spacing:.08em}
-    .mode-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+    .mode-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
     .mode-card{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);border-radius:15px;padding:10px;text-align:left;color:var(--text);cursor:pointer;transition:.16s ease}
     .mode-card b{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
-    .mode-card span{display:block;color:var(--muted);font-size:10px;font-weight:850;line-height:1.25;margin-top:3px}
+    .mode-card span{display:block;color:var(--muted);font-size:10px;font-weight:400;line-height:1.3;margin-top:3px}
     .mode-card.active{border-color:rgba(89,255,140,.62);background:linear-gradient(135deg,rgba(89,255,140,.16),rgba(255,211,106,.06));box-shadow:0 0 0 1px rgba(89,255,140,.16),0 14px 38px rgba(89,255,140,.08)}
     .mode-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .mode-pick-head{display:none;margin:2px 0 8px;padding:8px 10px;border-radius:12px;border:1px solid rgba(255,211,106,.26);background:linear-gradient(90deg,rgba(255,211,106,.12),rgba(89,255,140,.06));font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:1000}
+    .mode-pick-head{display:none;margin:18px 0 10px;padding:16px 0 0;border-top:1px solid rgba(255,211,106,.24);background:none;font-size:10px;letter-spacing:.10em;text-transform:uppercase;color:var(--dim);font-weight:700;font-family:'Barlow Condensed',sans-serif}
     .select-wrap{border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);border-radius:14px;padding:9px;transition:.18s ease;position:relative;overflow:hidden}
     .select-wrap:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.03),transparent 55%);pointer-events:none;opacity:.8}
     .select-wrap label{display:block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin-bottom:5px}
@@ -59,13 +62,13 @@
     .rule-chip.good{color:var(--green);border-color:rgba(89,255,140,.2);background:rgba(89,255,140,.07)}
     .rule-chip.bad{color:var(--red);border-color:rgba(255,101,120,.24);background:rgba(255,101,120,.06)}
     @media(max-width:380px){.mode-grid,.mode-options{grid-template-columns:1fr}}
-    .panel{background:linear-gradient(180deg,rgba(25,56,39,.86),rgba(10,20,15,.94));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+    .panel{background:linear-gradient(180deg,rgba(25,56,39,.86),rgba(10,20,15,.94));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
     .player-card{position:relative;overflow:hidden}
     .player-card:before{content:"";position:absolute;inset:-60px -80px auto auto;width:230px;height:180px;background:radial-gradient(circle,rgba(89,255,140,.22),transparent 65%);pointer-events:none}
     .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
     .stat{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.055);border-radius:15px;padding:12px}
-    .stat small,.label{display:block;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:1000}
-    .stat b{display:block;font-size:32px;line-height:1;color:var(--text)}
+    .stat small,.label{display:block;font-size:10px;letter-spacing:.10em;text-transform:uppercase;color:var(--dim);font-weight:700}
+    .stat b{display:block;font-size:32px;line-height:1;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:600;font-variant-numeric:tabular-nums}
     .stat.pot b{color:var(--gold)}
     .stat b.spinning{animation:statSlot .09s linear infinite}
     @keyframes statSlot{0%{transform:translateY(-3px);opacity:.6}50%{transform:translateY(3px);opacity:1}100%{transform:none;opacity:1}}
@@ -92,10 +95,14 @@
     .trait{border:1px solid rgba(255,255,255,.12);border-radius:15px;padding:12px;text-align:center;background:rgba(255,255,255,.045)}
     .trait b{font-size:22px}.trait small{display:block;font-size:9px;letter-spacing:.18em;color:var(--dim);font-weight:1000;text-transform:uppercase}
     .pb-banner{border:1px solid rgba(255,211,106,.28);background:linear-gradient(90deg,rgba(255,211,106,.08),rgba(89,255,140,.05));border-radius:14px;padding:10px 13px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:1000}
+    .scout-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:0 0 14px;padding:0 0 13px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .scout-card-kicker{font-size:13px;letter-spacing:.20em;text-transform:uppercase;color:var(--green);font-weight:1000;font-family:'Barlow Condensed',sans-serif}
+    .scout-card-copy{font-size:12px;line-height:1.35;color:var(--muted);font-weight:500;margin-top:3px;max-width:280px}
+    .scout-reroll-counter{flex:0 0 auto;min-width:116px;text-align:center;border:1px solid rgba(255,211,106,.48);background:linear-gradient(135deg,rgba(255,211,106,.18),rgba(89,255,140,.08));border-radius:10px;padding:10px 12px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:24px;line-height:.95;font-weight:900;text-transform:uppercase;letter-spacing:.03em;box-shadow:0 14px 36px rgba(255,211,106,.10)}
     .pb-banner .pb-label{color:var(--dim);letter-spacing:.18em;text-transform:uppercase;font-size:9px}
-    .pb-banner .pb-score{color:var(--gold);font-size:22px;line-height:1}
-    .pb-banner .pb-title{color:var(--muted);font-size:11px;margin-top:2px}
-    .btn{width:100%;border:0;border-radius:19px;background:linear-gradient(180deg,#72ff9d,#28b963);color:#06100b;font-weight:1000;font-size:16px;padding:17px 18px;box-shadow:0 14px 40px rgba(89,255,140,.22);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+    .pb-banner .pb-score{color:var(--gold);font-size:22px;line-height:1;font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:600;font-variant-numeric:tabular-nums}
+    .pb-banner .pb-title{color:var(--muted);font-size:11px;margin-top:2px}.pb-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.pb-meta span{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);border-radius:999px;padding:3px 7px;font-size:9px;color:var(--text);font-weight:1000;letter-spacing:.08em;text-transform:uppercase}.pb-meta span.mode{border-color:rgba(255,211,106,.32);background:rgba(255,211,106,.08);color:var(--gold)}.pb-meta span.missing{color:var(--dim);border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.035)}
+    .btn{width:100%;border:0;border-radius:8px;background:linear-gradient(180deg,#72ff9d,#28b963);color:#06100b;font-weight:800;font-size:15px;padding:15px 18px;box-shadow:0 10px 32px rgba(89,255,140,.20);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}
     .btn:active{transform:scale(.97)}
     .btn:disabled{opacity:.5;cursor:not-allowed}
     .btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid rgba(255,255,255,.16);box-shadow:none}
@@ -103,53 +110,53 @@
     .btn.beat-pb{background:linear-gradient(180deg,#ffe28b,#d89e20);color:#0a0800;box-shadow:0 14px 40px rgba(255,211,106,.3)}
 
     /* HOME SCREEN */
-    .home-screen{padding-bottom:120px}
-    .home-hero{position:relative;overflow:hidden;border:1px solid rgba(89,255,140,.22);background:linear-gradient(155deg,rgba(31,84,49,.92),rgba(8,17,12,.96) 56%,rgba(255,211,106,.08));border-radius:28px;padding:20px 16px 16px;box-shadow:var(--shadow);margin-bottom:14px}
+    .home-screen{padding-bottom:80px}
+    .home-hero{position:relative;overflow:hidden;border:1px solid rgba(89,255,140,.22);background:linear-gradient(155deg,rgba(31,84,49,.92),rgba(8,17,12,.96) 56%,rgba(255,211,106,.08));border-radius:12px;padding:28px 22px 24px;box-shadow:var(--shadow);margin-bottom:24px}
     .home-hero:before{content:"";position:absolute;inset:-90px -60px auto auto;width:260px;height:230px;background:radial-gradient(circle,rgba(89,255,140,.22),transparent 66%);pointer-events:none}
     .home-hero:after{content:"";position:absolute;inset:auto -80px -120px auto;width:260px;height:220px;background:radial-gradient(circle,rgba(255,211,106,.14),transparent 68%);pointer-events:none}
     .home-eyebrow{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--green);font-weight:1000;margin-bottom:8px}
-    .home-title{font-size:58px;line-height:.84;margin:0;letter-spacing:-.075em;text-transform:uppercase;max-width:420px}
-    .home-lede{font-size:15px;line-height:1.35;color:var(--muted);font-weight:850;margin:12px 0 16px;max-width:440px}
+    .home-title{font-size:62px;line-height:.86;margin:0 0 6px;letter-spacing:.01em;text-transform:uppercase;max-width:420px;font-family:'Barlow Condensed',sans-serif;font-weight:900}
+    .home-lede{font-size:15px;line-height:1.35;color:var(--muted);font-weight:400;margin:16px 0 24px;max-width:440px;font-size:16px;line-height:1.55}
     .home-lede strong{color:var(--gold)}
-    .home-actions{display:grid;gap:8px;margin-top:12px;position:relative;z-index:2}
-    .home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 0;position:relative;z-index:2}
-    .home-stat{border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);border-radius:16px;padding:11px 8px;text-align:center}
-    .home-stat b{display:block;font-size:23px;line-height:1;color:var(--gold)}
-    .home-stat small{display:block;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin-top:5px}
-    .home-section{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border-radius:22px;padding:15px;margin:12px 0}
-    .home-section h2{font-size:28px;line-height:.92;letter-spacing:-.055em;text-transform:uppercase;margin:0 0 8px}
-    .home-section p{color:var(--muted);font-weight:780;line-height:1.45;font-size:14px;margin:7px 0}
-    .home-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
-    .home-step,.challenge-card{border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.16);border-radius:16px;padding:12px;display:flex;gap:10px;align-items:flex-start}
-    .step-num{width:34px;height:34px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;background:var(--gold);color:#06100b;font-weight:1000}
-    .home-step b,.challenge-card b{display:block;font-size:14px;text-transform:uppercase;letter-spacing:.02em}
-    .home-step span,.challenge-card span{display:block;color:var(--muted);font-weight:760;font-size:12px;line-height:1.35;margin-top:3px}
+    .home-actions{display:grid;gap:10px;margin-top:0;position:relative;z-index:2}
+    .home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 0;position:relative;z-index:2}
+    .home-stat{border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);border-radius:8px;padding:16px 8px;text-align:center}
+    .home-stat b{display:block;font-size:28px;line-height:1;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700}
+    .home-stat small{display:block;font-size:8px;letter-spacing:.10em;text-transform:uppercase;color:var(--dim);font-weight:600;margin-top:7px}
+    .home-section{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border-radius:12px;padding:24px;margin:16px 0}
+    .home-section h2{font-size:28px;line-height:.92;letter-spacing:.01em;text-transform:uppercase;margin:0 0 14px;font-family:'Barlow Condensed',sans-serif;font-weight:800}
+    .home-section p{color:var(--muted);font-weight:400;line-height:1.65;font-size:15px;margin:10px 0}
+    .home-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px}
+    .home-step,.challenge-card{border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.16);border-radius:8px;padding:16px;display:flex;gap:14px;align-items:flex-start}
+    .step-num{width:36px;height:36px;flex:0 0 auto;border-radius:6px;display:grid;place-items:center;background:var(--gold);color:#06100b;font-weight:800;font-family:'Barlow Condensed',sans-serif;font-size:17px}
+    .home-step b,.challenge-card b{display:block;font-size:14px;text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+    .home-step span,.challenge-card span{display:block;color:var(--muted);font-weight:400;font-size:13px;line-height:1.6;margin-top:0}
     .challenge-card{align-items:center}.challenge-card:before{content:"▸";color:var(--gold);font-weight:1000;font-size:18px;line-height:1}
-    .faq-list{display:grid;gap:8px;margin-top:10px}
+    .faq-list{display:grid;gap:10px;margin-top:16px}
     .faq-item{border:1px solid rgba(255,255,255,.11);background:rgba(0,0,0,.16);border-radius:16px;overflow:hidden}
-    .faq-q{width:100%;border:0;background:transparent;color:var(--text);text-align:left;padding:13px 14px;font-weight:1000;font-size:13px;display:flex;justify-content:space-between;gap:14px;cursor:pointer}
+    .faq-q{width:100%;border:0;background:transparent;color:var(--text);text-align:left;padding:16px 18px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:14px;cursor:pointer}
     .faq-q:after{content:"+";color:var(--gold)}
-    .faq-a a{color:var(--gold);font-weight:1000;text-decoration:none}.faq-a{display:none;padding:0 14px 13px;color:var(--muted);font-weight:760;font-size:13px;line-height:1.42}
+    .faq-a a{color:var(--gold);font-weight:1000;text-decoration:none}.faq-a{display:none;padding:0 18px 18px;color:var(--muted);font-weight:400;font-size:14px;line-height:1.65}
     .faq-item.open .faq-q:after{content:"–"}.faq-item.open .faq-a a{color:var(--gold);font-weight:1000;text-decoration:none}.faq-a{display:block}
-    .home-footer{font-size:11px;line-height:1.45;color:var(--dim);font-weight:760;text-align:center;margin:18px 0 4px;padding:0 6px}
+    .home-footer{font-size:12px;line-height:1.65;color:var(--dim);font-weight:400;text-align:center;margin:32px 0 8px;padding:0 6px}
     .home-footer a{color:var(--gold);text-decoration:none;font-weight:1000}
-    .home-mini-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .home-mini-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
     .home-mini-nav a{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:999px;padding:7px 10px;color:var(--muted);font-size:11px;font-weight:1000;text-decoration:none;text-transform:uppercase;letter-spacing:.08em}
     @media(hover:hover){.faq-q:hover,.home-mini-nav a:hover{background:rgba(89,255,140,.08);color:var(--text)}.home-step:hover,.challenge-card:hover{border-color:rgba(255,211,106,.28);transform:translateY(-1px)}}
-    @media(min-width:820px){.app{width:min(1120px,100%)}.home-hero{padding:28px}.home-title{font-size:82px}.home-lede{font-size:18px}.home-actions{grid-template-columns:220px 220px}.home-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:start}.home-grid.two{grid-template-columns:1fr 1fr}.home-section h2{font-size:36px}.home-stats{max-width:620px}.home-stat b{font-size:30px}}
+    @media(min-width:820px){.app{width:min(1120px,100%)}.home-hero{padding:40px 36px}.home-title{font-size:82px}.home-lede{font-size:18px}.home-actions{grid-template-columns:220px 220px}.home-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:start}.home-grid.two{grid-template-columns:1fr 1fr}.home-section h2{font-size:36px;margin-bottom:18px}.home-stats{max-width:620px}.home-stat b{font-size:30px}}
     @media(max-width:420px){.home-title{font-size:46px}.home-hero{padding:16px 13px}.home-stats{gap:6px}.home-stat{padding:9px 5px}.home-stat b{font-size:20px}.home-stat small{font-size:7px}.home-section{padding:13px;border-radius:19px}.home-section h2{font-size:24px}.home-lede{font-size:13.5px}}
 
     .sticky-actions{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);z-index:20;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;padding:18px 16px calc(28px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(5,12,8,1) 55%,rgba(5,12,8,.94) 78%,rgba(5,12,8,.72));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.08)}
     .hint{font-size:12px;color:var(--dim);text-align:center;margin:12px 0 4px}
     .career-top{position:sticky;top:0;z-index:5;margin:-18px -16px 12px;padding:18px 16px 10px;background:linear-gradient(180deg,rgba(5,12,8,.98),rgba(5,12,8,.84),transparent);backdrop-filter:blur(10px)}
-    .mini-card{border:1px solid rgba(89,255,140,.24);background:linear-gradient(90deg,rgba(16,45,28,.94),rgba(10,20,15,.94));border-radius:18px;padding:12px;box-shadow:0 16px 50px rgba(0,0,0,.32)}
+    .mini-card{border:1px solid rgba(89,255,140,.24);background:linear-gradient(90deg,rgba(16,45,28,.94),rgba(10,20,15,.94));border-radius:10px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,.32)}
     .mini-line{display:flex;gap:8px;align-items:center;justify-content:space-between}
-    .mini-name{font-size:17px;font-weight:1000;text-transform:uppercase;letter-spacing:-.03em}
-    .mini-sub{color:var(--muted);font-size:12px;font-weight:850;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mini-name{font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;font-family:'Barlow Condensed',sans-serif}
+    .mini-sub{color:var(--muted);font-size:12px;font-weight:400;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
-    .mini-stat{border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.055);border-radius:12px;padding:8px;text-align:center}
+    .mini-stat{border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.055);border-radius:6px;padding:8px;text-align:center}
     .mini-stat small{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:1000}
-    .mini-stat b{display:block;font-size:19px}
+    .mini-stat b{display:block;font-size:19px;font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:600;font-variant-numeric:tabular-nums}
     .mini-stat.pot b{color:var(--gold)}
     .career-countdown{display:flex;justify-content:space-between;align-items:center;margin:10px 0 4px}
     .countdown-label{color:var(--muted);font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:1000}
@@ -159,9 +166,9 @@
     .last-moment{border:1px solid rgba(255,211,106,.3);background:linear-gradient(90deg,rgba(255,211,106,.10),rgba(89,255,140,.05));border-radius:14px;padding:10px 13px;margin:8px 0 4px;font-size:12px;font-weight:900;color:var(--gold);display:none}
     .last-moment.show{display:block}
     .last-moment-label{font-size:9px;color:var(--dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:3px}
-    .timeline{padding-bottom:240px}
-    .timeline-title{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin:14px 0 4px}
-    .beat-card{--club1:rgba(89,255,140,.16);--club2:rgba(255,255,255,.04);--clubAccent:var(--green);background:linear-gradient(135deg,var(--club1),rgba(14,28,19,.98) 44%,var(--club2));border:1px solid;border-color:color-mix(in srgb,var(--clubAccent) 42%,rgba(255,255,255,.14));border-radius:18px;padding:14px;margin:10px 0;animation:beatIn .38s ease both;position:relative;overflow:hidden}
+    .timeline{padding-bottom:120px}
+    .timeline-title{font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:var(--dim);font-weight:700;margin:16px 0 6px;font-family:'Barlow Condensed',sans-serif}
+    .beat-card{--club1:rgba(89,255,140,.16);--club2:rgba(255,255,255,.04);--clubAccent:var(--green);background:linear-gradient(135deg,var(--club1),rgba(14,28,19,.98) 44%,var(--club2));border:1px solid;border-color:color-mix(in srgb,var(--clubAccent) 42%,rgba(255,255,255,.14));border-radius:10px;padding:16px;margin:14px 0;animation:beatIn .38s ease both;position:relative;overflow:hidden}
     .beat-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--clubAccent);box-shadow:0 0 24px var(--clubAccent);opacity:.85}
     .beat-card.major-trophy{border-color:rgba(255,211,106,.78)!important;background:linear-gradient(135deg,rgba(255,211,106,.28),rgba(31,61,32,.98) 48%,rgba(8,15,10,.98))!important;box-shadow:0 0 0 1px rgba(255,211,106,.20),0 20px 70px rgba(255,211,106,.18)}
     .beat-card.major-award{border-color:rgba(213,140,255,.62)!important;background:linear-gradient(135deg,rgba(213,140,255,.20),rgba(24,48,34,.98) 52%,rgba(8,15,10,.98))!important;box-shadow:0 18px 60px rgba(213,140,255,.14)}
@@ -171,11 +178,17 @@
     .beat-card.news-transfer:before{width:100%;height:5px;bottom:auto;background:linear-gradient(90deg,var(--blue),var(--gold),var(--green));box-shadow:0 0 28px rgba(118,201,255,.55)}
     .news-inner{padding:15px 15px 16px;position:relative;z-index:1}
     .news-tag{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(118,201,255,.38);background:rgba(118,201,255,.10);border-radius:999px;color:var(--blue);font-size:9px;font-weight:1000;letter-spacing:.18em;text-transform:uppercase;padding:6px 9px;margin-bottom:10px}
-    .transfer-fee{font-size:38px;line-height:.88;font-weight:1000;letter-spacing:-.06em;color:var(--gold);text-transform:uppercase;margin:6px 0;text-shadow:0 0 28px rgba(255,211,106,.18)}
+    .transfer-fee{font-size:42px;line-height:.88;font-weight:900;letter-spacing:.02em;color:var(--gold);text-transform:uppercase;margin:6px 0;text-shadow:0 0 28px rgba(255,211,106,.18);font-family:'Barlow Condensed',sans-serif}
     .transfer-route{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:9px 0 8px;color:var(--text);font-size:13px;font-weight:1000;text-transform:uppercase;letter-spacing:.03em}
     .route-club{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:999px;padding:6px 9px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .route-arrow{color:var(--green);font-size:16px}
-    .news-copy{font-size:13px;line-height:1.35;color:var(--muted);font-weight:800;margin-top:8px}
+    .news-copy{font-size:13px;line-height:1.35;color:var(--muted);font-weight:400;margin-top:8px;line-height:1.45}
+    .news-transfer .beat-head{align-items:center}
+    .news-transfer .age-pill{flex:0 0 46px}
+    .news-transfer .beat-title{padding-right:0}
+    .news-transfer .transfer-route{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;width:100%}
+    .news-transfer .route-club{min-width:0;text-align:center}
+    @media(max-width:420px){.transfer-fee{font-size:34px}.news-inner{padding:14px 13px 15px}.news-transfer .transfer-route{gap:6px}.news-transfer .route-club{font-size:11px;padding:6px 7px}}
     .beat-card.news-intl{border-color:rgba(118,201,255,.68)!important;background:radial-gradient(circle at 20% 0%,rgba(118,201,255,.26),transparent 34%),linear-gradient(135deg,rgba(20,46,72,.98),rgba(10,22,18,.98))!important;}
     .beat-card.news-debut{border-color:rgba(89,255,140,.70)!important;background:radial-gradient(circle at 80% 0%,rgba(89,255,140,.24),transparent 34%),linear-gradient(135deg,rgba(16,64,36,.98),rgba(8,18,12,.98))!important;}
     .beat-card.news-award{border-color:rgba(213,140,255,.70)!important;background:radial-gradient(circle at 50% 0%,rgba(213,140,255,.25),transparent 38%),linear-gradient(135deg,rgba(42,22,58,.98),rgba(10,18,13,.98))!important;}
@@ -191,25 +204,25 @@
     .beat-card.major-trophy:after,.beat-card.major-award:after,.beat-card.major-intl:after,.beat-card.major-transfer:after,.beat-card.major-debut:after,.beat-card.major-breakout:after,.beat-card.major-crossroads:after,.beat-card.news-transfer:after,.beat-card.news-award:after,.beat-card.news-trophy:after,.beat-card.news-intl:after,.beat-card.news-debut:after,.beat-card.ballon-dor:after{content:"";position:absolute;inset:-120% -80%;background:linear-gradient(110deg,transparent 40%,rgba(255,255,255,.22),transparent 60%);animation:sheen 1.2s ease .15s both;pointer-events:none}
     @keyframes sheen{from{transform:translateX(-45%) rotate(8deg)}to{transform:translateX(45%) rotate(8deg)}}
     @keyframes beatIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-    .club-ribbon{display:flex;align-items:center;gap:8px;margin:-2px 0 10px 57px;color:var(--clubAccent);font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:1000}
+    .club-ribbon{display:flex;align-items:center;gap:8px;margin:-2px 0 10px 56px;color:var(--clubAccent);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;font-family:'Barlow Condensed',sans-serif}
     .club-dot{width:9px;height:9px;border-radius:50%;background:var(--clubAccent);box-shadow:0 0 18px var(--clubAccent)}
     .beat-head{display:flex;gap:10px;align-items:flex-start}
-    .age-pill{flex:0 0 auto;width:47px;height:47px;border-radius:15px;background:var(--gold);color:#091109;display:grid;place-items:center;font-weight:1000;font-size:18px}
+    .age-pill{flex:0 0 auto;width:46px;height:46px;border-radius:6px;background:var(--gold);color:#091109;display:grid;place-items:center;font-weight:800;font-size:19px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.02em}
     .age-pill.milestone{animation:pillPop .4s cubic-bezier(.18,.89,.32,1.28) both;background:linear-gradient(135deg,#ffe28b,#d89e20)}
     @keyframes pillPop{from{transform:scale(.7)}to{transform:scale(1)}}
-    .beat-title{font-size:18px;font-weight:1000;line-height:1.05}
-    .beat-text{color:var(--muted);font-weight:750;font-size:13px;line-height:1.35;margin-top:5px}
+    .beat-title{font-size:20px;font-weight:800;line-height:1.0;font-family:'Barlow Condensed',sans-serif;letter-spacing:.02em;text-transform:uppercase}
+    .beat-text{color:var(--muted);font-weight:400;font-size:13.5px;line-height:1.5;margin-top:6px}
     .beat-text strong{color:var(--gold)}
     .season-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
-    .metric{border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(0,0,0,.18);padding:9px 5px;text-align:center}
-    .metric small{display:block;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);font-weight:1000}
-    .metric b{font-size:17px}
-    .metric.good b{color:var(--green)}.metric.gold b{color:var(--gold)}.metric.red b{color:var(--red)}
+    .metric{border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(0,0,0,.18);padding:9px 5px;text-align:center}
+    .metric small{display:block;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700}
+    .metric b{font-size:18px;font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:600;font-variant-numeric:tabular-nums}
+    .metric.good{border-color:rgba(89,255,140,.35);background:rgba(89,255,140,.10)}.metric.good b{color:var(--green);font-weight:700}.metric.gold b{color:var(--gold)}.metric.red{border-color:rgba(255,101,120,.25);background:rgba(255,101,120,.07)}.metric.red b{color:var(--red)}
     .choice-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
     .choice-btns.three{grid-template-columns:1fr 1fr 1fr}
-    .choice-btn{border:1px solid rgba(255,211,106,.4);background:rgba(255,211,106,.08);border-radius:14px;padding:12px;color:var(--text);font-weight:1000;font-size:13px;cursor:pointer;transition:all .18s ease;text-align:center;line-height:1.3}
+    .choice-btn{border:1px solid rgba(255,211,106,.4);background:rgba(255,211,106,.08);border-radius:8px;padding:14px 12px;color:var(--text);font-weight:700;font-size:13px;cursor:pointer;transition:all .18s ease;text-align:center;line-height:1.3}
     .choice-btn:hover,.choice-btn:active{background:rgba(255,211,106,.18);border-color:rgba(255,211,106,.7);transform:scale(.98)}
-    .choice-sub{display:block;font-size:10px;color:var(--muted);font-weight:800;margin-top:4px;letter-spacing:.06em}
+    .choice-sub{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:4px;letter-spacing:.04em}
     /* retirement screen replaced by inline beat + sticky footer */
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .retirement-big{font-size:72px;font-weight:1000;line-height:.82;letter-spacing:-.08em;text-transform:uppercase;margin-bottom:12px}
@@ -237,19 +250,22 @@
     .share-footer{margin-top:12px;font-size:9px;color:var(--dim);letter-spacing:.18em;text-transform:uppercase}
     .share-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
     /* SUMMARY */
-    .summary h2{font-size:34px;line-height:.9;letter-spacing:-.06em;text-transform:uppercase;margin:0 0 8px}
+
+    .summary-actions{display:grid;grid-template-columns:1fr;gap:10px;margin:18px 0 calc(56px + env(safe-area-inset-bottom));padding-bottom:8px}
+    @media(min-width:560px){.summary-actions{grid-template-columns:1fr 1fr}}
+    .summary h2{font-size:34px;line-height:.9;letter-spacing:.02em;text-transform:uppercase;margin:0 0 8px;font-family:'Barlow Condensed',sans-serif;font-weight:500}
     .legacy{font-size:16px;color:var(--gold);font-weight:1000;margin-bottom:12px}
     .summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
     .summary .metric{padding:12px}
     .club-table{width:100%;border-collapse:separate;border-spacing:0 7px;margin-top:12px;font-size:12px}
     .club-table th{color:var(--dim);font-size:9px;letter-spacing:.12em;text-transform:uppercase;text-align:left}
-    .club-table td{background:rgba(255,255,255,.055);padding:8px 6px;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);font-weight:800}
+    .club-table td{background:rgba(255,255,255,.055);padding:8px 6px;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);font-weight:500}
     .club-table td:first-child{border-left:1px solid rgba(255,255,255,.08);border-radius:10px 0 0 10px}
     .club-table td:last-child{border-right:1px solid rgba(255,255,255,.08);border-radius:0 10px 10px 0;color:var(--gold)}
     .summary-stack{display:grid;gap:12px;margin-top:14px;grid-template-columns:1fr}
-    .summary-card{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border-radius:18px;padding:12px;width:100%}
-    .summary-card h3{margin:0 0 8px;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--green)}
-    .summary-card-sub{font-size:12px;color:var(--muted);font-weight:800;margin:-1px 0 10px}
+    .summary-card{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border-radius:10px;padding:14px;width:100%}
+    .summary-card h3{margin:0 0 10px;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);font-family:'Barlow Condensed',sans-serif;font-weight:700}
+    .summary-card-sub{font-size:12px;color:var(--muted);font-weight:400;margin:-1px 0 10px}
     .table-wrap{width:100%;max-width:100%;overflow:auto;max-height:min(62vh,520px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:8px;border-radius:12px}
     .club-table.tight{width:100%;min-width:100%;margin-top:4px}
     .club-table.tight.scroll-wide{min-width:820px}
@@ -268,17 +284,17 @@
     .achievement-title{font-size:18px;line-height:1.05;font-weight:1000;color:var(--text)}
     .achievement-count{flex:0 0 auto;min-width:52px;text-align:center;border-radius:999px;padding:7px 10px;background:rgba(255,211,106,.12);border:1px solid rgba(255,211,106,.32);font-size:18px;font-weight:1000;color:var(--gold)}
     .achievement-card.trophy .achievement-count{background:rgba(89,255,140,.10);border-color:rgba(89,255,140,.28);color:var(--green)}
-    .achievement-meta{font-size:11px;color:var(--muted);font-weight:850;line-height:1.4}
-    .achievement-story{font-size:12px;line-height:1.4;color:var(--text);font-weight:760;margin-top:7px}
+    .achievement-meta{font-size:11px;color:var(--muted);font-weight:400;line-height:1.4}
+    .achievement-story{font-size:12px;line-height:1.4;color:var(--text);font-weight:400;margin-top:7px}
     .achievement-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-    .achievement-chip{padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);font-size:10px;font-weight:850;color:var(--text)}
+    .achievement-chip{padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);font-size:10px;font-weight:500;color:var(--text)}
     .achievement-card.legendary .achievement-chip{border-color:rgba(255,211,106,.18)}
     .award-list,.trophy-list{display:grid;gap:8px;margin-top:6px}
     .award-item,.trophy-item{border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.18);border-radius:14px;padding:10px}
     .award-item b,.trophy-item b{color:var(--gold)}
-    .award-meta{font-size:11px;color:var(--muted);font-weight:850;margin-top:3px}
-    .award-reason{font-size:12px;line-height:1.35;color:var(--text);font-weight:750;margin-top:5px}
-    .empty-note{color:var(--muted);font-weight:800;font-size:12px;padding:6px 0}
+    .award-meta{font-size:11px;color:var(--muted);font-weight:400;margin-top:3px}
+    .award-reason{font-size:12px;line-height:1.35;color:var(--text);font-weight:400;margin-top:5px}
+    .empty-note{color:var(--muted);font-weight:400;font-size:12px;padding:6px 0}
     .finish-chip{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,211,106,.22);border-radius:999px;padding:4px 8px;color:var(--gold);background:rgba(255,211,106,.08);font-size:11px;font-weight:1000}
     .goat-card{border:1px solid rgba(255,211,106,.34);background:linear-gradient(135deg,rgba(255,211,106,.16),rgba(89,255,140,.07));border-radius:18px;padding:12px;margin-top:12px}
     .run-result-card{border:1px solid rgba(255,211,106,.38);background:linear-gradient(135deg,rgba(255,211,106,.18),rgba(89,255,140,.06));border-radius:18px;padding:12px;margin-top:12px;position:relative;overflow:hidden}
@@ -293,7 +309,7 @@
     .run-result-main{font-size:20px;line-height:1.05;font-weight:1000;letter-spacing:-.03em;margin-top:4px;text-transform:uppercase}
     .run-result-copy{font-size:13px;line-height:1.35;color:var(--muted);font-weight:850;margin-top:7px}
     .goat-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-    .goat-score{font-size:42px;font-weight:1000;line-height:.9;color:var(--gold)}
+    .goat-score{font-size:48px;font-weight:900;line-height:.9;color:var(--gold);font-family:'Barlow Condensed',sans-serif;letter-spacing:.02em}
     .goat-label{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);font-weight:1000}
     .objective{margin-top:8px;color:var(--muted);font-size:13px;font-weight:850}
     .objective strong{color:var(--gold)}
@@ -314,18 +330,46 @@
     .ticker-season{font-size:22px;font-weight:1000;color:var(--green);letter-spacing:-.02em}
     .ticker-spinner{font-size:16px;animation:spin 1.4s linear infinite;display:inline-block}
     .season-advance-btn{display:none;margin-top:10px}
-    .season-divider{border:1px solid rgba(255,211,106,.34);background:linear-gradient(90deg,rgba(255,211,106,.14),rgba(89,255,140,.055));border-radius:16px;padding:12px 14px;margin:16px 0 12px;text-align:center;box-shadow:0 14px 44px rgba(255,211,106,.08)}
+    .season-divider{border:1px solid rgba(255,211,106,.34);background:linear-gradient(90deg,rgba(255,211,106,.14),rgba(89,255,140,.055));border-radius:8px;padding:12px 14px;margin:18px 0 14px;text-align:center;box-shadow:0 10px 32px rgba(255,211,106,.08)}
     .season-divider-label{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin-bottom:4px}
-    .season-divider-title{font-size:18px;font-weight:1000;color:var(--gold);text-transform:uppercase;letter-spacing:-.02em}
+    .season-divider-title{font-size:22px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;font-family:'Barlow Condensed',sans-serif}
     .season-divider-copy{font-size:12px;line-height:1.35;color:var(--muted);font-weight:850;margin-top:5px}
     @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
     .retire-footer{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);z-index:20;padding:18px 16px calc(28px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(5,12,8,1) 55%,rgba(5,12,8,.94) 78%,rgba(5,12,8,.72));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(255,211,106,.22);display:none}
-    .retire-footer.show{display:block}
+    .retire-footer.show{display:none}
     .beat-card.retirement-beat{border-color:rgba(255,211,106,.7)!important;background:linear-gradient(135deg,rgba(255,211,106,.28),rgba(31,61,32,.98) 50%,rgba(8,15,10,.98))!important;box-shadow:0 0 0 1px rgba(255,211,106,.22),0 28px 90px rgba(255,211,106,.28)!important}
+    /* Dice of Fate */
+    .dice-face{display:block;font-size:52px;line-height:1;margin-bottom:12px;transition:all .08s ease}
+    .dice-result{font-size:13px;font-weight:1000;color:var(--muted);margin-top:10px;letter-spacing:.06em}
+    /* Inline season advance button in timeline */
+    .season-advance-btn{width:100%;margin:16px 0 calc(80px + env(safe-area-inset-bottom));display:block;border:0;border-radius:19px;background:linear-gradient(180deg,#ffe28b,#d89e20);color:#0a0800;font-weight:1000;font-size:15px;padding:15px 18px;cursor:pointer;transition:transform .12s ease}
+    .season-advance-btn:active{transform:scale(.97)}
+    .season-advance-btn:disabled{opacity:.5}
+    /* Transfer choice buttons — stacked on mobile, row on wider screens */
+    .transfer-choice-btns{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}
+    @media(min-width:560px){.transfer-choice-btns{grid-template-columns:1fr 1fr}}
+    @media(min-width:820px){.transfer-choice-btns{grid-template-columns:1fr 1fr 1fr 1fr}}
+    /* Crossroads context card */
+    .crossroads-ctx{border:1px solid rgba(255,211,106,.22);background:rgba(0,0,0,.28);border-radius:14px;padding:10px 12px;margin:12px 0;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+    .ctx-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .ctx-row:last-child{border-bottom:0}
+    .ctx-label{color:var(--dim);font-weight:1000;letter-spacing:.1em;text-transform:uppercase;font-size:9px}
+    .ctx-val{color:var(--text);font-weight:1000;font-size:12px;text-align:right}
+    .scout-step-label{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+    .scout-cols{display:block}
+    .scout-col-left{margin-bottom:20px}
+    .scout-col-right{}
+    .scout-step-num{width:24px;height:24px;flex:0 0 auto;border-radius:4px;background:var(--green);color:#020c04;display:grid;place-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px}
+    .scout-step-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text)}
+    .scout-step-hint{font-size:11px;color:var(--dim);font-weight:400}
+    .card-actions{margin-top:14px;display:grid;gap:8px}
+    .card-secondary-actions{display:none;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
+    .card-secondary-actions.show{display:grid}
     .toast{position:fixed;left:50%;top:14px;transform:translateX(-50%) translateY(-20px);width:min(488px,calc(100% - 32px));z-index:100;background:linear-gradient(90deg,rgba(89,255,140,.95),rgba(255,211,106,.95));color:#06100b;border-radius:18px;padding:13px 15px;font-weight:1000;opacity:0;pointer-events:none;transition:.25s ease}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     /* OVR CHIP + TROPHY/AWARD CHIPS */
-    .beat-ovr-chip{position:absolute;top:12px;right:12px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:1000;letter-spacing:.06em;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:var(--dim);box-shadow:0 8px 22px rgba(0,0,0,.18);text-shadow:0 1px 0 rgba(0,0,0,.28)}
+    .beat-ovr-chip{position:absolute;top:12px;right:12px;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;letter-spacing:.06em;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:var(--dim);font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+    .beat-ovr-chip.positive{background:linear-gradient(135deg,rgba(89,255,140,.28),rgba(40,185,99,.18));border-color:rgba(89,255,140,.7);color:#59ff8c;box-shadow:0 0 18px rgba(89,255,140,.22),0 4px 12px rgba(0,0,0,.3)}
     .beat-ovr-chip.bronze{background:linear-gradient(135deg,rgba(143,83,42,.34),rgba(88,50,28,.18));border-color:rgba(196,126,70,.55);color:#d99a62;box-shadow:0 0 16px rgba(196,126,70,.14)}
     .beat-ovr-chip.silver{background:linear-gradient(135deg,rgba(230,238,240,.30),rgba(130,145,151,.14));border-color:rgba(220,235,240,.62);color:#e6eef0;box-shadow:0 0 18px rgba(220,235,240,.13)}
     .beat-ovr-chip.gold{background:linear-gradient(135deg,rgba(255,211,106,.42),rgba(203,139,22,.20));border-color:rgba(255,211,106,.78);color:#ffd36a;box-shadow:0 0 22px rgba(255,211,106,.22)}
@@ -352,22 +396,12 @@
       .app{width:min(1100px,100%);padding:28px 28px calc(var(--actions-offset, 150px) + 38px)}
       .top{margin-bottom:20px}
       h1{font-size:68px;line-height:.84;max-width:620px}
-      #scoutScreen.active{
-        display:grid;
-        grid-template-columns:minmax(360px,1fr) minmax(420px,520px);
-        grid-template-areas:
-          "top top"
-          "mode player"
-          "pb player"
-          "hint player";
-        gap:20px;
-        align-items:start;
-      }
-      #scoutScreen .top{grid-area:top}
-      #scoutScreen .mode-panel{grid-area:mode;margin-bottom:0}
-      #scoutScreen .player-card{grid-area:player;margin-bottom:0;align-self:start}
-      #scoutScreen #pbBanner{grid-area:pb;margin-bottom:0}
-      #scoutScreen .hint{grid-area:hint;margin:0;text-align:left}
+      #scoutScreen .top{margin-bottom:20px}
+      #scoutScreen .scout-cols{display:grid;grid-template-columns:minmax(340px,1fr) minmax(400px,520px);gap:20px;align-items:start}
+      #scoutScreen .scout-col-left,.scout-col-right{min-width:0}
+      #scoutScreen .mode-panel{margin-bottom:0}
+      #scoutScreen .player-card{margin-bottom:0}
+      #scoutScreen #pbBanner{margin-bottom:10px}
       .mode-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .mode-options{grid-template-columns:repeat(2,minmax(0,1fr))}
       .mode-panel.easy-focus .mode-options{grid-template-columns:1fr}
@@ -392,6 +426,10 @@
       .app{padding-bottom:calc(var(--actions-offset, 190px) + 36px)}
       .sticky-actions{padding-top:20px}
       .player-card{margin-bottom:18px}
+      .scout-card-head{align-items:center;margin-bottom:12px;padding-bottom:12px}
+      .scout-card-kicker{font-size:12px;letter-spacing:.18em}
+      .scout-card-copy{font-size:10.5px;max-width:180px}
+      .scout-reroll-counter{min-width:98px;padding:9px 10px;font-size:20px;border-radius:9px}
     }
 
 
@@ -430,12 +468,14 @@
       .mode-title{font-size:9px;letter-spacing:.18em}
       .mode-sub{font-size:10.5px;line-height:1.28}
       .mode-badge{font-size:9px;padding:5px 7px}
+      .scout-card-head{gap:10px}
+      .scout-reroll-counter{min-width:94px;font-size:19px;padding:8px 9px}
       .mode-grid{gap:7px;margin-bottom:8px}
       .mode-card{padding:8px;border-radius:13px}
       .mode-card b{font-size:12px}
       .mode-card span{font-size:9.5px;line-height:1.18}
       .mode-options{gap:7px}
-      .mode-pick-head{font-size:9px;padding:7px 9px}
+      .mode-pick-head{font-size:9px}
       .mode-panel.easy-focus .select-wrap{padding:10px 10px 11px}
       .mode-panel.easy-focus .select-wrap select{font-size:13.5px}
       .select-wrap{padding:8px;border-radius:13px}
@@ -447,7 +487,7 @@
       .pb-banner{padding:8px 10px;border-radius:13px;margin-bottom:10px}
       .pb-banner .pb-label{font-size:8px}
       .pb-banner .pb-title{font-size:10px}
-      .pb-banner .pb-score{font-size:19px}
+      .pb-banner .pb-score{font-size:19px}.pb-meta span{font-size:8px;padding:3px 6px}
 
       .panel{padding:12px;border-radius:18px;margin-bottom:12px}
       .player-card{overflow:visible}
@@ -584,9 +624,6 @@
       .personality b{font-size:10.5px!important;}
     }
 
-    /* Extra breathing room so the final timeline card is not hidden behind the fixed controls */
-    @media (max-width:640px){.timeline{padding-bottom:300px}}
-
   </style>
 </head>
 <body>
@@ -624,7 +661,7 @@
   <section id="homeScreen" class="screen active home-screen">
     <div class="home-hero">
       <div class="home-eyebrow">Unofficial football career sim</div>
-      <h1 class="home-title">Project<br>GOAT</h1>
+      <h1 class="home-title">Project<br>GOAT 🐐</h1>
       <p class="home-lede">Roll a fictional 16-year-old wonderkid, watch their career unfold, and chase two targets: <strong>win the Ballon D’Goat for a successful run</strong>, then chase the impossible: <strong>8 Ballon D’Goats, 4 European Champions Cups and a World Championship</strong>. One more scout. Obviously.</p>
       <div class="home-actions">
         <button class="btn" id="homeStartBtn">Start New Save →</button>
@@ -706,13 +743,15 @@
   <section id="scoutScreen" class="screen">
     <div class="top">
       <div><div class="kicker">Project GOAT • Legacy Titles Build</div><h1>CAN YOU<br>BUILD THE<br>GOAT?</h1></div>
-      <div class="rolls">Rolls<b id="rollCount">0</b><span class="roll-title" id="rollTitle">—</span></div>
+      <div class="rolls"><span class="roll-title" id="rollTitle">—</span><span class="rolls-label">Rolls</span><b id="rollCount">0</b></div>
     </div>
 
+    <div class="scout-cols">
+    <div class="scout-col-left">
+    <div class="scout-step-label"><span class="scout-step-num">1</span><span class="scout-step-title">Choose your challenge</span></div>
     <div class="mode-panel easy-focus" id="modePanel">
       <div class="mode-head">
-        <div><div class="mode-title">Choose your save</div><div class="mode-sub" id="modeDesc">Easy route. Pick your position and club pool. Win the Ballon D’Goat, then chase the impossible.</div></div>
-        <div class="mode-badge" id="rerollBadge">5 rerolls</div>
+        <div><div class="mode-sub" id="modeDesc">Easy route. Pick your position and club pool. Win the Ballon D’Goat, then chase the impossible.</div></div>
       </div>
       <div class="mode-grid" id="modeGrid">
         <button class="mode-card" data-mode="standard"><b>Standard</b><span>Random everything. Fair GOAT chase.</span></button>
@@ -731,29 +770,46 @@
       </div>
       <div class="mode-rules" id="modeRules"></div>
     </div>
+    </div><!-- /col-left -->
+    <div class="scout-col-right">
+    <div class="scout-step-label" style="margin-bottom:10px"><span class="scout-step-num">2</span><span class="scout-step-title">Scout your prospect</span><span class="scout-step-hint"> — hit scout, review, reroll if needed</span></div>
     <div id="pbBanner" style="display:none" class="pb-banner">
-      <div><div class="pb-label">Personal Best</div><div class="pb-title" id="pbTitle">—</div><div id="pbModeTag" style="margin-top:5px"></div></div>
+      <div><div class="pb-label">Personal Best</div><div class="pb-title" id="pbTitle">—</div><div class="pb-meta" id="pbMeta" style="display:none"></div><div id="pbModeTag" style="margin-top:5px"></div></div>
       <div class="pb-score" id="pbScore">—</div>
     </div>
     <div class="panel player-card">
+      <div class="scout-card-head">
+        <div>
+          <div class="scout-card-kicker">Scout Report</div>
+          <div class="scout-card-copy">Review the prospect, then spend rerolls where it matters.</div>
+        </div>
+        <div class="scout-reroll-counter" id="rerollBadge">5 rerolls left</div>
+      </div>
       <div class="stats">
         <div class="stat" id="overallStat"><small>Overall</small><b id="overallVal">—</b><button class="reroll-field-btn" id="rerollOverall" style="display:none" aria-label="Reroll overall">↻</button></div>
         <div class="stat pot" id="potentialStat"><small>Potential</small><b id="potentialVal">—</b><button class="reroll-field-btn" id="rerollPotential" style="display:none" aria-label="Reroll potential">↻</button></div>
       </div>
+      <div class="panel-section-rule" style="margin:10px 0 6px"></div>
       <div class="lock-hint" id="lockHint" style="display:none">↻ Reroll overall, potential or club directly. Each button uses 1 reroll.</div>
-      <div class="roll-row"><span class="label">First</span><div class="value identity-locked" id="firstVal">Tap scout</div></div>
+      <div class="roll-row"><span class="label">First</span><div class="value identity-locked" id="firstVal">—</div></div>
       <div class="roll-row"><span class="label">Last</span><div class="value identity-locked" id="lastVal">—</div></div>
       <div class="roll-row"><span class="label">Nation</span><div class="value identity-locked" id="nationVal">—</div></div>
       <div class="roll-row"><span class="label">Position</span><div class="value identity-locked" id="positionVal">—</div></div>
-      <div class="club-block"><span class="label">Starting club</span><div class="value club-value" id="clubVal">—<button class="reroll-field-btn" id="rerollClub" style="display:none" aria-label="Reroll starting club">↻</button></div></div>
+      <div class="club-block" style="margin-top:8px"><span class="label">Starting club</span><div class="value club-value" id="clubVal">—<button class="reroll-field-btn" id="rerollClub" style="display:none" aria-label="Reroll starting club">↻</button></div></div>
       <div class="personality"><span class="label">Personality / ceiling</span><b id="personalityVal">Unknown prospect</b></div>
+      <div class="panel-section-rule" style="margin:10px 0"></div>
       <div class="traits">
         <div class="trait"><small>Technical</small><b id="techVal">—</b></div>
         <div class="trait"><small>Physical</small><b id="physVal">—</b></div>
         <div class="trait"><small>Mental</small><b id="mentVal">—</b></div>
       </div>
-    </div>
-    <p class="hint">Generate the kid. Start the save. Chase Ballon D'Goat.</p>
+      <div class="panel-section-rule"></div>
+      <div class="card-actions">
+        <button class="btn" id="primaryBtn">Scout Prospect</button>
+        <button class="btn secondary" id="someoneElseBtn" style="display:none;margin-top:0">Scout someone else</button>
+      </div>
+    </div><!-- /col-right -->
+    </div><!-- /scout-cols -->
   </section>
   <section id="careerScreen" class="screen">
     <div class="career-top">
@@ -775,25 +831,21 @@
   </section>
   <div class="retire-footer" id="retireFooter">
     <div class="season-ticker" id="seasonTicker" style="display:none">
-      <span class="ticker-label" id="seasonTickerLabel">Simulating season</span>
+      <span class="ticker-label">Simulating season</span>
       <span class="ticker-season" id="tickerSeason">—</span>
       <span class="ticker-spinner">⏳</span>
     </div>
-    <button class="btn gold season-advance-btn" id="seasonAdvanceBtn" style="display:none">Generate season →</button>
     <button class="btn gold" id="retireProceedBtn" style="display:none">Hang up the boots — see the legacy →</button>
   </div>
   <section id="summaryScreen" class="screen">
     <div class="top"><div><div class="kicker">Project GOAT</div><h1>LEGACY</h1></div><div class="rolls">Rolls<b id="rollCount2">0</b></div></div>
     <div class="panel summary" id="summaryPanel"></div>
+    <div class="summary-actions" id="summaryActions">
+      <button class="btn gold" id="shareBtn" style="display:none">Share career card</button>
+      <button class="btn" id="againBtn" style="display:none">Generate Another Prospect</button>
+    </div>
   </section>
 </main>
-<div class="sticky-actions" id="globalActions">
-  <button class="btn" id="primaryBtn" style="display:none">Scout Prospect</button>
-  <button class="btn secondary" id="resetBtn" style="display:none">Reroll Current Player</button>
-  <button class="btn secondary" id="someoneElseBtn" style="display:none">Scout Someone Else</button>
-  <button class="btn gold" id="shareBtn" style="display:none">Share career card</button>
-  <button class="btn" id="againBtn" style="display:none">Generate Another Prospect</button>
-</div>
 <script>
 // ── AUDIO ENGINE (muted build) ───────────────────────────────────────────────
 // Sound is deliberately disabled for now. Keep these function names as no-ops
@@ -1044,7 +1096,7 @@ function showBenchwarmFork(p){
    '<em style="color:var(--dim)">'+ctx.clubLine+'</em>'+
    '</div></div></div>'+
    '<div class="beat-text" style="margin:12px 0 4px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:1000">What does he do?</div>'+
-   '<div class="choice-btns" id="benchwarmBtns" style="grid-template-columns:1fr 1fr 1fr">'+
+   '<div class="choice-btns fork-btns" style="grid-template-columns:1fr 1fr 1fr">'+
     '<button class="choice-btn" id="bwA" style="border-color:rgba(213,140,255,.5);background:rgba(213,140,255,.08)">'+
      '<span style="font-size:16px">📚</span> Loan to '+devClub.name+
      '<span class="choice-sub">'+devClub.country+' • '+devClub.desc+'</span>'+
@@ -1065,8 +1117,8 @@ function showBenchwarmFork(p){
   $('timeline').appendChild(div);
   div.scrollIntoView({behavior:'smooth',block:'end'});
 
-  function applyChoice(choice){
-   div.querySelector('#benchwarmBtns').remove();
+  async function applyChoice(choice){
+   const bb=div.querySelector('.fork-btns');if(bb)bb.remove();
    const textEl=div.querySelector('.beat-text');
 
    if(choice==='dev'){
@@ -1094,22 +1146,19 @@ function showBenchwarmFork(p){
     toast('Loan: '+minsClub.name);
 
    } else {
-    // Stay and fight — high risk
-    const wins=Math.random()<.35;
+    textEl.innerHTML='He stays. The training ground goes quiet. Everyone is watching.';
+    const diceRoll=await rollDiceOfFate('Two seasons without football. He refuses the loan and decides to fight for his place. Fortune favours the brave — or punishes the stubborn.');
+    const wins=diceRoll>=4;
     if(wins){
-     textEl.innerHTML="<strong>He stays.</strong> He trains every day like he's starting on Saturday. Eventually, the manager notices. It takes eight weeks and a hamstring to someone else, but the shirt is his. The loan offer quietly disappears.";
-     p.pressure=Math.max(0,p.pressure-8);
-     p.loyalty+=12;
-     p._benchYears=0;
+     textEl.innerHTML="<strong>He stays. He wins.</strong> Trains every day like he's starting Saturday. The manager notices. Eight weeks and a hamstring injury to someone else — the shirt is his.";
+     p.pressure=Math.max(0,p.pressure-8);p.loyalty+=12;p._benchYears=0;
      if(!p.crossroadsTaken)p.crossroadsTaken='appBoost';
     } else {
-     textEl.innerHTML="<strong>He stays.</strong> Admirable. Also: the manager still doesn't play him. The bench is exactly as comfortable as before. The agent sends one final passive-aggressive email and stops replying for a month.";
-     p.pressure+=10;
-     p._benchYears+=1;
-     p._benchwarmForkDone=false; // reset so fork re-fires next season
+     textEl.innerHTML="<strong>He stays. He rots.</strong> The manager still doesn't play him. The bench is exactly as comfortable as before. The agent stops replying for a month.";
+     p.pressure+=10;p._benchYears+=1;p._benchwarmForkDone=false;
     }
     playLock();HAP.lock();
-    toast(wins?'Fought his way in':'Still on the bench');
+    toast(wins?'Fought his way in — dice '+diceRoll:'Still benched — dice '+diceRoll);
    }
    resolve(choice);
   }
@@ -1117,6 +1166,61 @@ function showBenchwarmFork(p){
   $('bwA').onclick=()=>applyChoice('dev');
   $('bwB').onclick=()=>applyChoice('mins');
   $('bwC').onclick=()=>applyChoice('fight');
+ });
+}
+
+function showDevClubLoanFork(p){
+ return new Promise(resolve=>{
+  playCrossroads();HAP.crossroads();
+  const pair=pick(benchwarmLoanOptions);
+  const devOpt=pair[0],minsOpt=pair[1];
+  const parentName=p.club.name;
+  const ctxLines=[
+   parentName+' have a plan for '+p.first+'. It involves leaving '+parentName+' for twelve months.',
+   'The coaching staff are direct: the pathway is loan, develop, return sharper.',
+   'One season in, the gap is honest. '+parentName+' want him further on before the real integration starts.',
+   '"We believe in you. We also need you playing football. Not watching it from the bench."',
+  ];
+  const div=document.createElement('div');
+  div.className='beat-card major-crossroads';
+  div.setAttribute('style','--club1:rgba(89,255,140,.18);--club2:rgba(89,255,140,.04);--clubAccent:#59ff8c;');
+  div.innerHTML=
+   '<div class="club-ribbon"><span class="club-dot" style="background:var(--green);box-shadow:0 0 18px var(--green)"></span>'+
+   '<span style="color:var(--green)">Development Pathway — Age '+p.age+'</span></div>'+
+   '<div class="beat-head"><div class="age-pill milestone" style="background:linear-gradient(135deg,#59ff8c,#1a8040);color:#020c04">'+p.age+'</div>'+
+   '<div><div class="beat-title">📋 THE DEVELOPMENT LOAN</div>'+
+   '<div class="beat-text"><strong>'+parentName+' have a plan.</strong> '+pick(ctxLines)+'</div></div></div>'+
+   '<div class="choice-btns fork-btns">'+
+    '<button class="choice-btn" id="dlA" style="border-color:rgba(213,140,255,.5);background:rgba(213,140,255,.08)">'+
+     '<span style="font-size:16px">📚</span> '+devOpt.name+
+     '<span class="choice-sub">'+devOpt.country+' • '+devOpt.desc+'</span>'+
+     '<span class="choice-sub" style="color:var(--purple);margin-top:4px">Structured development</span>'+
+    '</button>'+
+    '<button class="choice-btn" id="dlB" style="border-color:rgba(89,255,140,.5);background:rgba(89,255,140,.08)">'+
+     '<span style="font-size:16px">⏱️</span> '+minsOpt.name+
+     '<span class="choice-sub">'+minsOpt.country+' • '+minsOpt.desc+'</span>'+
+     '<span class="choice-sub" style="color:var(--green);margin-top:4px">Raw minutes and graft</span>'+
+    '</button>'+
+   '</div>';
+  $('timeline').appendChild(div);
+  div.scrollIntoView({behavior:'smooth',block:'end'});
+  function applyLoan(choice){
+   const db=div.querySelector('.fork-btns');if(db)db.remove();
+   const chosen=choice==='dev'?devOpt:minsOpt;
+   const btEl=div.querySelector('.beat-text');if(btEl)btEl.innerHTML='<strong>'+chosen.name+'.</strong> '+chosen.outcome+' '+parentName+' retain the registration. The pathway is set.';
+   if(!p.crossroadsTaken)p.crossroadsTaken=chosen.fx.crossroadsTaken;
+   if(chosen.fx.ovrBoost)p.overall=clamp(p.overall+chosen.fx.ovrBoost,32,99);
+   if(chosen.fx.repBoost)p.rep+=chosen.fx.repBoost/10;
+   if(chosen.fx.pressureRelief)p.pressure=Math.max(0,p.pressure-chosen.fx.pressureRelief);
+   if(chosen.fx.appBoost)p._loanAppBonus=(p._loanAppBonus||0)+chosen.fx.appBoost;
+   p._loanClub=chosen.name;
+   p._benchYears=0;
+   playLock();HAP.lock();
+   toast('Development loan: '+chosen.name);
+   resolve(choice);
+  }
+  $('dlA').onclick=()=>applyLoan('dev');
+  $('dlB').onclick=()=>applyLoan('mins');
  });
 }
 
@@ -1133,7 +1237,7 @@ function showLoanFork(p){
    '<div class="beat-head"><div class="age-pill milestone" style="background:linear-gradient(135deg,#76c9ff,#2a6aa0);color:#020c14">'+p.age+'</div>'+
    '<div><div class="beat-title">🔗 NOT BREAKING THROUGH</div>'+
    '<div class="beat-text"><strong>The coaching staff are honest:</strong> he\'s not cracking the first team at '+parentName+' this season. He needs minutes elsewhere. Two loan moves are on the table.</div></div></div>'+
-   '<div class="choice-btns" id="loanChoiceBtns">'+
+   '<div class="choice-btns fork-btns">'+
     '<button class="choice-btn" id="loanA" style="border-color:rgba(213,140,255,.5);background:rgba(213,140,255,.08)">'+
      '<span style="font-size:17px">📚</span> '+devClub.name+
      '<span class="choice-sub">'+devClub.country+' • '+devClub.desc+'</span>'+
@@ -1148,10 +1252,10 @@ function showLoanFork(p){
   $('timeline').appendChild(div);
   div.scrollIntoView({behavior:'smooth',block:'end'});
   function applyLoan(choice){
-   div.querySelector('#loanChoiceBtns').remove();
+   const lb=div.querySelector('.fork-btns');if(lb)lb.remove();
    const chosen=choice==='dev'?devClub:minsClub;
    const fx=choice==='dev'?{crossroadsTaken:'growthBoost',repBoost:3}:{crossroadsTaken:'appBoost',pressureRelief:8};
-   div.querySelector('.beat-text').innerHTML='<strong>'+chosen.name+'</strong> it is. '+chosen.desc+'. The agent files the paperwork. '+parentName+' retain his registration.';
+   const btEl=div.querySelector('.beat-text');if(btEl)btEl.innerHTML='<strong>'+chosen.name+'</strong> it is. '+chosen.desc+'. The agent files the paperwork. '+parentName+' retain his registration.';
    if(fx.crossroadsTaken&&!p.crossroadsTaken)p.crossroadsTaken=fx.crossroadsTaken;
    if(fx.repBoost)p.rep+=fx.repBoost/10;
    if(fx.pressureRelief)p.pressure=Math.max(0,p.pressure-(fx.pressureRelief||0));
@@ -1168,6 +1272,12 @@ function showLoanFork(p){
 
 // ── NEW CROSSROADS EVENTS (extends original 8) ─────────────────────────────────
 // These get merged into the main crossroadsEvents array below
+
+// Development clubs — structured youth pathways, faster growth under 22
+const DEV_CLUBS=new Set(['Dortmund','Leipzig','Salzburg','Ajax','Porto','Benfica','Sporting',
+ 'Eindhoven','Freiburg','Rennes','Lille','Midtjylland','Genk','Anderlecht','Copenhagen',
+ 'Stuttgart','Mainz','Leverkusen','Southampton','Right to Dream','Generation Foot',
+ 'Bern','Basel','Vitesse','Twente','Alkmaar']);
 
 // ── CROSSROADS (8 events, some state-gated) ───────────────────────────────────
 const crossroadsEvents=[
@@ -1265,7 +1375,7 @@ function updateModeUI(){
 }
 function resetScoutVisuals(){
  state.player=null;state.modeRolls=0;locks={overall:false,potential:false,club:false};
- $('primaryBtn').textContent='Scout Prospect';$('primaryBtn').disabled=false;$('resetBtn').style.display='none';$('someoneElseBtn').style.display='none';
+ $('primaryBtn').textContent='Scout Prospect';$('primaryBtn').disabled=false;(()=>{const _r=$('resetBtn');if(_r)_r.style.display='none'})();(()=>{const _s=$('someoneElseBtn');if(_s)_s.style.display='none'})();
  ['overallVal','potentialVal','techVal','physVal','mentVal'].forEach(id=>$(id).textContent='—');
  ['firstVal','lastVal','nationVal','positionVal','clubVal'].forEach((id,i)=>{const labels=['Tap scout','—','—','—','—'];$(id).classList.remove('locked','stat-locked');while($(id).firstChild&&$(id).firstChild.nodeType===3)$(id).removeChild($(id).firstChild);$(id).insertBefore(document.createTextNode(labels[i]),$(id).firstChild);});
  ['rerollOverall','rerollPotential','rerollClub'].forEach(id=>{if($(id)){ $(id).style.display='none';$(id).disabled=true;}});['overallStat','potentialStat','clubVal'].forEach(id=>{$(id).classList.remove('stat-locked');});
@@ -1276,7 +1386,7 @@ function resetScoutVisuals(){
 // ── SCREEN / UI UTILS ─────────────────────────────────────────────────────────
 function setScreen(id){
  ['homeScreen','scoutScreen','careerScreen','summaryScreen'].forEach(s=>$(s).classList.toggle('active',s===id));
- ['primaryBtn','resetBtn','someoneElseBtn'].forEach(bid=>{const b=$(bid);if(b)b.style.display=id==='scoutScreen'&&bid==='primaryBtn'?'block':'none';});
+ // Scout actions are inline in the card
  $('shareBtn').style.display='none';
  if(id==='summaryScreen')$('againBtn').style.display='block'; else $('againBtn').style.display='none';
  if(id!=='careerScreen'){const rf=$('retireFooter');if(rf)rf.classList.remove('show');}
@@ -1304,14 +1414,19 @@ function updatePBBanner(){
  $('pbBanner').style.display='flex';
  $('pbScore').textContent=personalBest.score;
  $('pbTitle').textContent=`${personalBest.name} • ${personalBest.status}`;
- const modeTag=$('pbModeTag');
- if(modeTag&&personalBest.mode){
-  const m=MODE_CONFIG[personalBest.mode]||MODE_CONFIG.standard;
-  const colours={easy:'rgba(89,255,140,.15)',standard:'rgba(118,201,255,.15)',hard:'rgba(255,211,106,.15)',legendary:'rgba(255,101,120,.15)'};
-  const borders={easy:'rgba(89,255,140,.4)',standard:'rgba(118,201,255,.35)',hard:'rgba(255,211,106,.4)',legendary:'rgba(255,101,120,.4)'};
-  const texts={easy:'#59ff8c',standard:'#76c9ff',hard:'#ffd36a',legendary:'#ff6578'};
-  modeTag.innerHTML=`<span style="display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 8px;font-size:9px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;background:${colours[personalBest.mode]||colours.standard};border:1px solid ${borders[personalBest.mode]||borders.standard};color:${texts[personalBest.mode]||texts.standard}">${m.name} mode</span>`;
+ const meta=$('pbMeta');
+ if(meta){
+  const m=personalBest.mode?(MODE_CONFIG[personalBest.mode]||MODE_CONFIG.standard):null;
+  const items=[
+   {text:personalBest.nation?nationLabel(personalBest.nation):'Nationality unknown',cls:personalBest.nation?'':'missing'},
+   {text:personalBest.position||'Position unknown',cls:personalBest.position?'':'missing'},
+   {text:m?`${m.name} mode`:'Legacy difficulty',cls:m?'mode':'missing'}
+  ];
+  meta.innerHTML=items.map(i=>`<span class="${i.cls}">${i.text}</span>`).join('');
+  meta.style.display='flex';
  }
+ const modeTag=$('pbModeTag');
+ if(modeTag){modeTag.innerHTML='';modeTag.style.display='none';}
 }
 
 // ── CLUB THEMES ───────────────────────────────────────────────────────────────
@@ -1384,7 +1499,7 @@ function makePlayer(options={}){
  const ceiling=ceilings[clamp(Math.floor((potential-55)/7),0,ceilings.length-1)];
  const longevity=clamp(Math.round(48+(physical-50)*.35+(mental-50)*.45+(personality.growth||0)*3+rnd(-10,18)+(mode.name==='Easy'?8:0)-(mode.name==='Legendary'?5:0)),22,96);
  const retirementAge=clamp(Math.round(32+(longevity-45)/7+(position==='Goalkeeper'?4:0)+(personality.late?2:0)+rnd(-2,3)-(mode.name==='Legendary'?rnd(0,2):0)),32,43);
- const player={first,last,nation,position,age:16,club,overall,potential,technical,physical,mental,personality,ceiling,longevity,retirementAge,mode:state.mode,pressure:0,rep:club.rep/10,loyalty:0,transferIntent:0,chaos:personality.chaos||0,growthBias:personality.growth||0,awards:0,trophies:0,ballonDors:0,caps:0,intGoals:0,hasIntlDebut:false,hasFirstTeamCallup:false,hasSeniorDebut:false,totalApps:0,totalGoals:0,totalAssists:0,totalFees:0,totalEarnings:0,currentSalary:0,ratingSum:0,seasons:0,careerEnded:false,careerEndReason:null,awardLog:[],trophyLog:[],intlLog:[],clubHistory:[{club:club.name,from:16,apps:0,goals:0,assists:0,ratingSum:0,seasons:0,earnings:0,fee:'Academy'}],seasonLog:[],ballonDorNearMisses:0,crossroadsTaken:null,injurySeasons:0,loanForkDone:false,_injuryCrisisDone:false,_benchYears:0,_benchwarmForkDone:false};
+ const player={first,last,nation,position,age:16,club,overall,potential,technical,physical,mental,personality,ceiling,longevity,retirementAge,mode:state.mode,pressure:0,rep:club.rep/10,loyalty:0,transferIntent:0,chaos:personality.chaos||0,growthBias:personality.growth||0,awards:0,trophies:0,ballonDors:0,caps:0,intGoals:0,hasIntlDebut:false,hasFirstTeamCallup:false,hasSeniorDebut:false,totalApps:0,totalGoals:0,totalAssists:0,totalFees:0,totalEarnings:0,currentSalary:0,ratingSum:0,seasons:0,careerEnded:false,careerEndReason:null,awardLog:[],trophyLog:[],intlLog:[],clubHistory:[{club:club.name,from:16,apps:0,goals:0,assists:0,ratingSum:0,seasons:0,earnings:0,fee:'Academy'}],seasonLog:[],ballonDorNearMisses:0,crossroadsTaken:null,injurySeasons:0,loanForkDone:false,_injuryCrisisDone:false,_benchYears:0,_benchwarmForkDone:false,_pendingTransfer:false};
  player.prediction=scoutPrediction(player);
  return player;
 }
@@ -1411,7 +1526,7 @@ async function scout(options={}){
  $('potentialVal').textContent='?';
  $('personalityVal').textContent='Rolling…';
  $('techVal').textContent='—';$('physVal').textContent='—';$('mentVal').textContent='—';
- $('primaryBtn').disabled=true;$('resetBtn').style.display='none';$('someoneElseBtn').style.display='none';updateActionOffset();
+ $('primaryBtn').disabled=true;(()=>{const _r=$('resetBtn');if(_r)_r.style.display='none'})();(()=>{const _s=$('someoneElseBtn');if(_s)_s.style.display='none'})();updateActionOffset();
  $('lockHint').style.display='none';
 
  const fv=$('firstVal'),lv=$('lastVal'),nv=$('nationVal'),pv=$('positionVal'),cv=$('clubVal');
@@ -1436,7 +1551,7 @@ async function scout(options={}){
  $('techVal').textContent=p.technical;$('physVal').textContent=p.physical;$('mentVal').textContent=p.mental;
  setupFieldRerollButtons();
  $('lockHint').style.display=currentMode().maxRerolls?'block':'none';
- $('primaryBtn').textContent='Start Career';$('primaryBtn').disabled=false;$('resetBtn').style.display='none';$('someoneElseBtn').style.display='block';updateModeUI();updateActionOffset();setTimeout(updateActionOffset,120);
+ $('primaryBtn').textContent='Start Career';$('primaryBtn').disabled=false;if($('someoneElseBtn'))(()=>{const _s=$('someoneElseBtn');if(_s)_s.style.display='block'})();updateModeUI();updateActionOffset();setTimeout(updateActionOffset,120);
  toast(wasReroll?'Scout report refreshed 🔁':'Scout report locked in');
  updatePBBanner();
 }
@@ -1560,7 +1675,24 @@ function addBeat({age,title,text,apps=0,goals=0,assists=0,ovr=0,rating=0,finish=
  const awardChipCls=awardCount>0?'award-chip hit':'award-chip';
  const chipHtml=ovrChipLabel?('<div class="'+ovrChipCls+'">'+ovrChipLabel+'</div>'):'';
  const extraHtml=(awardsText||trophiesText)?('<div class="beat-text" style="margin-top:10px">'+(awardsText?'🏅 '+awardsText:'')+(awardsText&&trophiesText?'<br>':'')+(trophiesText?'🏆 '+trophiesText:'')+'</div>'):'';
- const metricHtml=noStats?'':(
+ const isRetirementBeat=(kind||'').includes('retirement-beat');
+ const pStats=state.player||{};
+ const careerAvg=pStats.seasons&&pStats.ratingSum?(pStats.ratingSum/pStats.seasons):0;
+ const careerPeak=Math.max(currentOvr||0, ...((pStats.seasonLog||[]).map(s=>s.ovr||0)), pStats.overall||0);
+ const metricHtml=isRetirementBeat?(
+  '<div class="season-metrics">'+
+   '<div class="metric"><small>Career Apps</small><b>'+((pStats.totalApps)||0)+'</b></div>'+
+   '<div class="metric"><small>Career Goals</small><b>'+((pStats.totalGoals)||0)+'</b></div>'+
+   '<div class="metric"><small>Career Assists</small><b>'+((pStats.totalAssists)||0)+'</b></div>'+
+   '<div class="metric gold"><small>Peak OVR</small><b>'+(careerPeak||'—')+'</b></div>'+
+  '</div>'+
+  '<div class="season-metrics">'+
+   '<div class="metric gold"><small>Avg Rating</small><b>'+(careerAvg?careerAvg.toFixed(2):'—')+'</b></div>'+
+   '<div class="metric"><small>Trophies</small><b><span class="'+((pStats.trophies||0)>0?'trophy-chip hit':'trophy-chip')+'">'+((pStats.trophies||0)>0?'🏆 '+pStats.trophies:'—')+'</span></b></div>'+
+   '<div class="metric"><small>Awards</small><b><span class="'+((pStats.awards||0)>0?'award-chip hit':'award-chip')+'">'+((pStats.awards||0)>0?'🏅 '+pStats.awards:'—')+'</span></b></div>'+
+   '<div class="metric gold"><small>Earnings</small><b style="font-size:13px">'+money((pStats.totalEarnings)||0)+'</b></div>'+
+  '</div>'
+ ):noStats?'':(
   '<div class="season-metrics">'+
    '<div class="metric"><small>Apps</small><b>'+apps+'</b></div>'+
    '<div class="metric"><small>Goals</small><b>'+goals+'</b></div>'+
@@ -1585,9 +1717,193 @@ function addBeat({age,title,text,apps=0,goals=0,assists=0,ovr=0,rating=0,finish=
 
 function headline(p,age,apps,goals,assists,rating,ovrDelta){
  if(p.careerEnded)return 'Career stopped dead';
- if(goals>=45)return 'Scorched earth season';if(goals>=32)return 'Monster season';if(goals>=22)return 'Goals everywhere';if(assists>=14)return 'Chance creation machine';if(rating>=7.7)return 'Elite campaign';if(ovrDelta>=10)return 'Development explosion';if(ovrDelta>=6)return 'Breakout jump';if(ovrDelta>=3)return 'Level up season';if(ovrDelta<=-2)return 'The decline bites';if(apps<12)return 'Minutes dry up';
+ if(goals>=45)return 'Scorched earth season';if(goals>=32)return 'Monster season';if(goals>=22)return 'Goals everywhere';if(assists>=14)return 'Chance creation machine';if(rating>=7.7)return 'Elite campaign';if(ovrDelta>=15&&apps>5)return 'NUCLEAR BREAKOUT';if(ovrDelta>=10&&apps>10)return 'Development explosion';if(ovrDelta>=6&&apps>6)return 'Breakout jump';if(ovrDelta>=3&&apps>4)return pick(['Growth visible in training','The coaching staff are pleased','Development ticking over','Another step forward']); if(ovrDelta>=3)return 'Developing behind the scenes';if(ovrDelta<=-2)return 'The decline bites';if(apps===0)return pick(['Still waiting for a chance','Yet to feature','The bench knows his name well']);if(apps<12)return pick(['Fringe involvement','Fleeting minutes','Barely involved']);
  if(Math.random()<.16)return pick(age<30?['Streets are watching','Quietly cooking','Scouts in the stands','Another chapter unlocked','Cult hero fumes detected']:['Another year in the books','Veteran minutes, veteran quality','The legs still work, mostly','Grey hairs, golden feet']);
  return pick(['Steady progress','Solid season','Another year in the bank','Development continues','The save rolls on']);
+}
+
+
+// ── DICE OF FATE ──────────────────────────────────────────────────────────────
+function rollDiceOfFate(stakeText){
+ return new Promise(resolve=>{
+  const div=document.createElement('div');
+  div.className='beat-card major-crossroads';
+  div.style.cssText='--club1:rgba(255,211,106,.18);--club2:rgba(255,211,106,.04);--clubAccent:#ffd36a;';
+  div.innerHTML=
+   '<div class="club-ribbon"><span class="club-dot" style="background:var(--gold);box-shadow:0 0 18px var(--gold)"></span>'+
+   '<span style="color:var(--gold)">The Dice of Fate</span></div>'+
+   '<div class="beat-head"><div class="age-pill milestone" style="background:linear-gradient(135deg,#ffd36a,#a07010);color:#000">🎲</div>'+
+   '<div><div class="beat-title">ROLL FOR YOUR DESTINY</div>'+
+   '<div class="beat-text">'+stakeText+'</div></div></div>'+
+   '<div style="text-align:center;margin-top:14px">'+
+   '<div class="dice-face" id="diceFace" style="font-size:52px;line-height:1;margin-bottom:12px">🎲</div>'+
+   '<button class="btn gold" id="diceRollBtn" style="width:200px">Roll the Dice</button>'+
+   '<div class="dice-result" id="diceResult" style="display:none;margin-top:10px;font-size:13px;font-weight:1000;color:var(--muted)"></div>'+
+   '</div>';
+  $('timeline').appendChild(div);
+  div.scrollIntoView({behavior:'smooth',block:'end'});
+  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  $('diceRollBtn').onclick=()=>{
+   $('diceRollBtn').disabled=true;
+   $('diceRollBtn').textContent='Rolling…';
+   let rolls=0;
+   const spin=setInterval(()=>{
+    $('diceFace').textContent=faces[Math.floor(Math.random()*6)];
+    rolls++;
+    if(rolls>14){
+     clearInterval(spin);
+     const result=Math.floor(Math.random()*6)+1;
+     $('diceFace').textContent=faces[result-1];
+     $('diceResult').style.display='block';
+     $('diceResult').textContent='Rolled a '+result;
+     $('diceRollBtn').style.display='none';
+     playLock();HAP.lock();
+     setTimeout(()=>resolve(result),700);
+    }
+   },80);
+  };
+ });
+}
+
+// ── TRANSFER AGENCY — player chooses direction ─────────────────────────────────
+async function showTransferChoice(p,age,autoFee){
+ return new Promise(resolve=>{
+  // Build three options: trophies, development, wildcard
+  const saudiClubs=['Riyadh Blue','Riyadh Victory','Jeddah Union','Jeddah Green'];
+  const lateCareer=age>=30;
+  // Trophy option: biggest available club
+  const trophyPool=bigClubs.filter(b=>b.tier>=6&&b.name!==p.club.name&&b.rep>p.club.rep);
+  const trophyClub=trophyPool.length?pick(trophyPool):pick(bigClubs.filter(b=>b.tier>=5&&b.name!==p.club.name));
+  // Development option: strong but player-focused
+  const devPool=bigClubs.filter(b=>b.tier>=4&&b.tier<=5&&b.name!==p.club.name);
+  const devClub=devPool.length?pick(devPool):pick(bigClubs.filter(b=>b.name!==p.club.name));
+  // Wildcard: interesting club, different league
+  const wildcardPool=lateCareer
+   ?bigClubs.filter(b=>saudiClubs.includes(b.name)||b.rep<p.club.rep)
+   :bigClubs.filter(b=>b.tier>=3&&b.tier<=4&&b.name!==p.club.name&&b.name!==devClub.name);
+  const wildcardClub=wildcardPool.length?pick(wildcardPool):pick(bigClubs.filter(b=>b.name!==p.club.name));
+  const div=document.createElement('div');
+  div.className='beat-card major-crossroads';
+  div.style.cssText='--club1:rgba(118,201,255,.18);--club2:rgba(118,201,255,.04);--clubAccent:#76c9ff;';
+  const headlines=[
+   'THREE CLUBS. ONE DECISION.',
+   'YOUR AGENT LAYS OUT THE OPTIONS.',
+   'THE SUMMER WINDOW IS OPEN.',
+   'CAREER-DEFINING TRANSFER INCOMING.',
+   'THE OFFERS ARE ON THE TABLE.',
+  ];
+  div.innerHTML=
+   '<div class="club-ribbon"><span class="club-dot" style="background:var(--blue);box-shadow:0 0 18px var(--blue)"></span>'+
+   '<span style="color:var(--blue)">Transfer Window</span></div>'+
+   '<div class="beat-head"><div class="age-pill milestone">'+age+'</div>'+
+   '<div><div class="beat-title">'+pick(headlines)+'</div>'+
+   '<div class="beat-text">The camp has had enough of speculation. Three serious offers are on the table — or he can stay loyal and shut the noise down. This decides the next chapter.</div></div></div>'+
+   '<div class="transfer-choice-btns" style="margin-top:14px">'+
+    '<button class="choice-btn" id="txA" style="border-color:rgba(255,211,106,.5);background:rgba(255,211,106,.08)">'+
+     '<span style="font-size:20px">🏆</span><br><strong>'+trophyClub.name+'</strong>'+
+     '<span class="choice-sub">Elite club. Massive nights. Trophy machine. Starting spot not guaranteed.</span>'+
+     '<span class="choice-sub" style="color:var(--gold);margin-top:4px">Chase glory</span>'+
+    '</button>'+
+    '<button class="choice-btn" id="txB" style="border-color:rgba(89,255,140,.5);background:rgba(89,255,140,.08)">'+
+     '<span style="font-size:20px">📈</span><br><strong>'+devClub.name+'</strong>'+
+     '<span class="choice-sub">Strong setup. Better minutes. Room to grow. Fewer headlines.</span>'+
+     '<span class="choice-sub" style="color:var(--green);margin-top:4px">Build the career</span>'+
+    '</button>'+
+    '<button class="choice-btn" id="txC" style="border-color:rgba(213,140,255,.5);background:rgba(213,140,255,.08)">'+
+     '<span style="font-size:20px">🌍</span><br><strong>'+wildcardClub.name+'</strong>'+
+     '<span class="choice-sub">Unexpected move. High risk. Could define the career — or derail it.</span>'+
+     '<span class="choice-sub" style="color:var(--purple);margin-top:4px">Roll the dice</span>'+
+    '</button>'+
+    '<button class="choice-btn" id="txD" style="border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.06)">'+
+     '<span style="font-size:20px">🛡️</span><br><strong>'+p.club.name+'</strong>'+
+     '<span class="choice-sub">Reject the offers. Back the badge. Fans love it, agents hate it.</span>'+
+     '<span class="choice-sub" style="color:var(--blue);margin-top:4px">Stay loyal</span>'+
+    '</button>'+
+   '</div>';
+  $('timeline').appendChild(div);
+  div.scrollIntoView({behavior:'smooth',block:'end'});
+  function stayLoyal(){
+   const cb=div.querySelector('.choice-btns,.fork-btns,.transfer-choice-btns');if(cb)cb.remove();
+   p.loyalty+=18;
+   p.transferIntent=Math.max(0,(p.transferIntent||0)-12);
+   p.pressure=Math.max(0,(p.pressure||0)-5);
+   p._pendingTransfer=false;
+   p._benchwarmForkDone=false;
+   const btEl=div.querySelector('.beat-text');
+   if(btEl)btEl.innerHTML='<strong>Decision made.</strong> He stays at '+p.club.name+'. The agent sighs. The fans absolutely do not.';
+   const loyalDiv=document.createElement('div');
+   loyalDiv.className='beat-card major-crossroads';
+   loyalDiv.setAttribute('style',clubTheme(p.club.name));
+   loyalDiv.innerHTML=
+    '<div class="club-ribbon"><span class="club-dot"></span><span>'+p.club.name+'</span></div>'+
+    '<div class="beat-head"><div class="age-pill milestone">'+age+'</div><div><div class="beat-title">STAYING LOYAL</div>'+
+    '<div class="beat-text"><strong>'+p.first+' '+p.last+'</strong> turns down the move and commits to '+p.club.name+'. Loyalty rises, transfer noise drops, and the next season becomes a proper prove-it year.</div></div></div>'+
+    '<div class="season-metrics"><div class="metric good"><small>Loyalty</small><b>+18</b></div><div class="metric good"><small>Pressure</small><b>-5</b></div><div class="metric"><small>Club</small><b style="font-size:13px">Same</b></div><div class="metric gold"><small>Fee</small><b>—</b></div></div>';
+   $('timeline').appendChild(loyalDiv);
+   loyalDiv.scrollIntoView({behavior:'smooth',block:'end'});
+   updateMini();playLock();HAP.lock();
+   toast('Staying loyal at '+p.club.name);
+   resolve({from:p.club.name,to:p.club.name,fee:'—',kind:'loyal'});
+  }
+  function doTransfer(buyer,kind){
+   const cb=div.querySelector('.choice-btns,.fork-btns,.transfer-choice-btns');if(cb)cb.remove();
+   const old=p.club;
+   const ageFactor=age<22?.72:age<27?1.0:age<30?.88:age<33?.62:.38;
+   const ovrBase=Math.max(p.overall-52,4);
+   const af=Math.pow(ovrBase/36,2.4);
+   const posFactor=['Striker','Winger','Attacking Midfielder'].includes(p.position)?1.28:p.position==='Goalkeeper'?.82:1.0;
+   const fameFactor=1+(p.ballonDors*.18)+(p.awards*.04)+(p.trophies*.02);
+   let fee=Math.round(clamp((af*55+10)*ageFactor*(buyer.tier>=6?1.35:1.12)*posFactor*fameFactor,5,400));
+   if(p.overall>=85&&buyer.tier>=6&&age<31)fee=Math.max(fee,Math.round(rnd(80,140)*(p.overall/85)*posFactor*ageFactor));
+   p.clubHistory[p.clubHistory.length-1].to=age;
+   p.club=buyer;p.rep+=buyer.rep/35;p.totalFees+=fee;
+   p.loyalty=0;p.pressure=kind==='trophy'?p.pressure+6:Math.max(0,p.pressure-4);
+   p._benchYears=0;p._benchwarmForkDone=true;p._injuryCrisisDone=false;p._pendingTransfer=false;
+   p.clubHistory.push({club:buyer.name,from:age,apps:0,goals:0,assists:0,ratingSum:0,seasons:0,earnings:0,fee:money(fee)});
+   if(kind==='dev'){p.crossroadsTaken=p.crossroadsTaken||'growthBoost';}
+   if(kind==='trophy'){p.crossroadsTaken=p.crossroadsTaken||'trophyBoost';}
+   const transferHeadlines=[
+    `<strong>${buyer.name}</strong> win the race. ${money(fee)} changes hands.`,
+    `<strong>${buyer.name}</strong> get their man. Fee: <strong>${money(fee)}</strong>. The internet has opinions.`,
+    `Done. <strong>${buyer.name}</strong>. <strong>${money(fee)}</strong>. New chapter.`,
+    `The deal is confirmed. <strong>${buyer.name}</strong>, <strong>${money(fee)}</strong>. Social media collapses briefly.`,
+   ];
+   // Update the decision card to show the choice made
+   const btEl=div.querySelector('.beat-text');if(btEl)btEl.innerHTML='<strong>Decision made.</strong> '+buyer.name+'. The agent files the paperwork.';
+   // Add a dedicated transfer beat card immediately after
+   const txDiv=document.createElement('div');
+   txDiv.className='beat-card news-transfer major-transfer';
+   txDiv.setAttribute('style',clubTheme(buyer.name));
+   const feeIsFree=fee===0;
+   const txHeadlines=[
+    `<strong>DONE DEAL.</strong> ${buyer.name} win the race. <strong>${feeIsFree?'Free transfer':money(fee)}</strong> — ${old.name} confirm the sale. New badge. New dressing room. New everything.`,
+    `<strong>${buyer.name}.</strong> ${feeIsFree?'Free transfer, pre-contract signed weeks ago.':'Fee: <strong>'+money(fee)+'</strong>.'} The agent is already on a plane. The social media numbers are climbing.`,
+    `<strong>IT'S DONE.</strong> ${p.first} ${p.last} to ${buyer.name}. ${feeIsFree?'Free.':'<strong>'+money(fee)+'</strong>.'} The forums have collapsed. The punditry discourse will last approximately one week.`,
+    `<strong>CONFIRMED:</strong> ${buyer.name}, ${feeIsFree?'free transfer':'<strong>'+money(fee)+'</strong>'}. New shirt incoming. The old number is already being handed out.`,
+   ];
+   const kindNote=kind==='trophy'?'Trophy-chasing move. The pressure goes up with the altitude.'
+    :kind==='dev'?'Development-focused. The minutes should come. The trophies might not — yet.'
+    :'The wildcard lands. Nobody saw this coming. Including the player.';
+   txDiv.innerHTML=
+    '<div class="news-inner">'+
+     '<div class="news-tag">⚡ Transfer Confirmed</div>'+
+     '<div class="beat-head"><div class="age-pill milestone">'+age+'</div>'+
+      '<div><div class="beat-title">'+buyer.name.toUpperCase()+'</div>'+
+      '<div class="transfer-fee">'+(feeIsFree?'Free transfer':money(fee))+'</div></div></div>'+
+     '<div class="transfer-route"><span class="route-club">'+old.name+'</span><span class="route-arrow">→</span><span class="route-club">'+buyer.name+'</span></div>'+
+     '<div class="news-copy">'+pick(txHeadlines)+' '+kindNote+'</div>'+
+    '</div>';
+   $('timeline').appendChild(txDiv);
+   txDiv.scrollIntoView({behavior:'smooth',block:'end'});
+   updateMini();playTransfer();HAP.transfer();
+   toast(old.name+' → '+buyer.name+' '+( feeIsFree?'Free':money(fee)));
+   resolve({from:old.name,to:buyer.name,fee:money(fee),kind});
+  }
+  $('txA').onclick=()=>doTransfer(trophyClub,'trophy');
+  $('txB').onclick=()=>doTransfer(devClub,'dev');
+  $('txC').onclick=()=>doTransfer(wildcardClub,'wildcard');
+  $('txD').onclick=()=>stayLoyal();
+ });
 }
 
 function maybeTransfer(p,age){
@@ -1631,8 +1947,20 @@ function maybeTransfer(p,age){
  const old=p.club;p.club=buyer;p.rep+=buyer.rep/35;p.totalFees+=fee;
  p.clubHistory[p.clubHistory.length-1].to=age;
  p.clubHistory.push({club:buyer.name,from:age,apps:0,goals:0,assists:0,ratingSum:0,seasons:0,earnings:0,fee:money(fee)});
- const dl=free?`${buyer.name} take him from ${old.name} on a <strong>free transfer</strong>. The agent is wearing sunglasses indoors.`:`${buyer.name} sign him from ${old.name} for <strong>${money(fee)}</strong>.`;
- return{from:old.name,to:buyer.name,fee:money(fee),free,text:`<strong>HOW MUCH?!</strong> ${dl} ${free?'Everyone calls it smart business until the wage packet leaks.':'The fee feels about right in modern football, which is to say completely deranged.'}`};
+ const freeLines=[
+  `${buyer.name} take him on a <strong>free</strong>. The agent is wearing sunglasses indoors. Everyone calls it smart business until the wage packet leaks.`,
+  `Pre-contract signed weeks ago. ${buyer.name} get him for nothing. ${old.name} are furious in a professionally diplomatic way.`,
+  `${buyer.name} swoop on the free. His agent planned this for months. Nobody is surprised except the club.`,
+ ];
+ const paidLines=[
+  `<strong>DONE DEAL.</strong> ${buyer.name} activate the clause. <strong>${money(fee)}</strong> hits ${old.name}. The agent is already on a plane.`,
+  `<strong>HOW MUCH?!</strong> ${buyer.name} pay <strong>${money(fee)}</strong>. The fee is genuinely deranged. Modern football, etc.`,
+  `<strong>${money(fee)}</strong>. That is the number. ${buyer.name} pay it. ${old.name} take it. ${p.first} signs. His social media triples overnight.`,
+  `${buyer.name} table a bid. ${old.name} hold firm for 48 hours, then fold. <strong>${money(fee)}</strong>. New shirt incoming.`,
+  `The rumours were right. ${buyer.name}, <strong>${money(fee)}</strong>. The punditry discourse lasts approximately one week.`,
+ ];
+ const dl=free?pick(freeLines):pick(paidLines);
+ return{from:old.name,to:buyer.name,fee:money(fee),free,text:dl};
 }
 
 function maybePositionShift(p,age){
@@ -1954,16 +2282,176 @@ function progressionSpike(p,age,baseDelta){
  if(mode==='Hard')chance*=.55;
  if(mode==='Legendary')chance*=.35;
  if(Math.random()>chance)return null;
- const maxByGap=clamp(gap-2,4,14);
- const low=early?6:5;
- const high=early?14:10;
- const bonus=clamp(rnd(low,high),4,maxByGap);
- const finalDelta=clamp(baseDelta+bonus,baseDelta+4,14);
- const label=finalDelta>=12?'NUCLEAR BREAKOUT':finalDelta>=9?'BREAKOUT SEASON':'SUDDEN LEVEL-UP';
+ // Return the range — dice roll in career loop determines actual bonus
+ const maxByGap=clamp(gap-2,4,20); // max 20 if the gap allows it
+ const low=early?4:3;
+ const high=clamp(early?20:14,low+1,maxByGap);
  const reason=early?'a ridiculous development year':'a late-blooming surge';
  p.breakoutSpikes=(p.breakoutSpikes||0)+1;
- return{bonus,finalDelta,label,reason};
+ return{low,high,baseDelta,reason,maxByGap};
 }
+
+// ── SPIKE DICE ROLL ────────────────────────────────────────────────────────────
+async function showSpikeRoll(p,age,spike,clubName){
+ return new Promise(resolve=>{
+  const {low,high,baseDelta,reason,maxByGap}=spike;
+  const name=p.first;
+  const intros=[
+   name+' has been doing something differently in training. Nobody can quite put their finger on it.',
+   'The coaching staff pulled up the metrics last Tuesday. Something has changed.',
+   'Three coaches have mentioned it independently. The numbers are backing it up.',
+   'There is a moment in every career where the ceiling stops feeling theoretical.',
+  ];
+  const div=document.createElement('div');
+  div.className='beat-card ballon-dor';
+  div.setAttribute('style','--club1:rgba(255,211,106,.38);--club2:rgba(255,211,106,.06);--clubAccent:#ffd36a;');
+  div.innerHTML=
+   '<div class="club-ribbon"><span class="club-dot" style="background:var(--gold);box-shadow:0 0 18px var(--gold)"></span>'+
+   '<span style="color:var(--gold)">Development Spike — Age '+age+'</span></div>'+
+   '<div class="beat-head"><div class="age-pill milestone" style="background:linear-gradient(135deg,#ffe28b,#d89e20);color:#000">'+age+'</div>'+
+   '<div><div class="beat-title">⚡ SOMETHING IS HAPPENING</div>'+
+   '<div class="beat-text">'+pick(intros)+'<br><br>'+
+   '<strong style="color:var(--gold)">Roll to see how big the jump is.</strong> Could be solid. Could be career-defining. Could be utterly disgusting.</div></div></div>'+
+   '<div style="border:1px solid rgba(255,211,106,.22);background:rgba(0,0,0,.28);border-radius:14px;padding:10px 12px;margin:12px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+    '<div style="text-align:center"><div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);font-weight:1000">Min jump</div><div style="font-size:28px;font-weight:1000;color:var(--muted)">+'+low+'</div></div>'+
+    '<div style="text-align:center"><div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);font-weight:1000">Max jump</div><div style="font-size:28px;font-weight:1000;color:var(--gold)">+'+high+'</div></div>'+
+   '</div>'+
+   '<div style="text-align:center;margin-top:10px">'+
+   '<div class="dice-face" id="spikeDice" style="font-size:56px;line-height:1;margin-bottom:12px">🎲</div>'+
+   '<button class="btn gold" id="spikeRollBtn" style="width:220px;font-size:17px">Roll for the jump</button>'+
+   '<div id="spikeResult" style="display:none;margin-top:14px"></div>'+
+   '</div>';
+  $('timeline').appendChild(div);
+  div.scrollIntoView({behavior:'smooth',block:'end'});
+  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  $('spikeRollBtn').onclick=()=>{
+   $('spikeRollBtn').disabled=true;
+   $('spikeRollBtn').textContent='Rolling…';
+   let ticks=0;
+   const spin=setInterval(()=>{
+    $('spikeDice').textContent=faces[Math.floor(Math.random()*6)];
+    ticks++;
+    if(ticks>18){
+     clearInterval(spin);
+     const diceVal=Math.floor(Math.random()*6)+1; // 1-6
+     $('spikeDice').textContent=faces[diceVal-1];
+     // Map dice 1-6 to the bonus range
+     const bonus=Math.round(low+((diceVal-1)/(5))*(high-low));
+     const finalOvr=clamp(p.overall+bonus,32,99);
+     const label=bonus>=16?'NUCLEAR BREAKOUT 💥':bonus>=12?'DEVELOPMENT EXPLOSION 🚀':bonus>=8?'BREAKOUT SEASON ⚡':'LEVEL UP 📈';
+     const resultLines={
+      1:[name+' improves. Not by a lot. The dice had mercy on the opposition.'],
+      2:[name+' puts in the work and it shows. +'+bonus+' overall. A proper step.'],
+      3:[name+' has a genuine breakthrough. +'+bonus+' overall. The coaching staff are smiling.'],
+      4:[name+' explodes. +'+bonus+' overall. The scouting networks are updating their files.'],
+      5:[name+' goes to another level entirely. +'+bonus+'. Other clubs are circling already.'],
+      6:['TWENTY? '+name+' went from development project to headline act in one season. +'+bonus+'. This is not normal.'],
+     };
+     const copy=resultLines[clamp(Math.round((bonus-low)/(Math.max(high-low,1))*5)+1,1,6)][0];
+     const resultEl=$('spikeResult');
+     resultEl.style.display='block';
+     resultEl.innerHTML=
+      '<div style="font-size:22px;font-weight:1000;color:var(--gold);letter-spacing:-.02em;margin-bottom:8px">'+label+'</div>'+
+      '<div style="font-size:44px;font-weight:1000;color:#fff;letter-spacing:-.04em;line-height:1;margin-bottom:10px">+'+bonus+' OVR</div>'+
+      '<div style="font-size:13px;color:var(--muted);font-weight:850;line-height:1.4">'+copy+'</div>'+
+      '<div style="font-size:11px;color:var(--dim);margin-top:8px">New overall: <strong style="color:var(--gold)">'+finalOvr+'</strong></div>';
+     $('spikeRollBtn').style.display='none';
+     playBallonDor();HAP.ballonDor();
+     setTimeout(()=>resolve({bonus,label,diceVal}),900);
+    }
+   },75);
+  };
+ });
+}
+
+// ── NARRATIVE BEATS ────────────────────────────────────────────────────────────
+function pickNarrativeBeat(p,age,apps,goals,assists,rating,ovrDelta,seasonClub){
+ const name=p.first;const club=seasonClub.name;
+ const atk=['Striker','Winger','Attacking Midfielder'].includes(p.position);
+ const beats=[];
+
+ // Breakthrough season — only fires if actually playing
+ if(ovrDelta>=3&&age<=24&&apps>=15)beats.push({
+  title:'🚀 BREAKTHROUGH SEASON',
+  text:`Something clicked this year. ${name} didn't just improve — he <em>arrived</em>. The coaching staff are using his name differently now. Less project, more asset.`,
+  kind:'major-debut',noStats:true
+ });
+
+ // Form slump
+ if(rating<6.8&&apps>18&&age>20)beats.push({
+  title:'📉 FORM SLUMP',
+  text:`A difficult spell at ${club}. The numbers are there if you squint but the eye test tells a different story. The manager is being asked about it in press conferences. He is diplomatic. Barely.`,
+  kind:'near-miss',noStats:true
+ });
+
+ // Media hype
+ if(goals>=18&&atk&&age<=26)beats.push({
+  title:'📰 MEDIA HYPE BUILDS',
+  text:`The column inches are multiplying. Pundits are putting ${name} in their starting XIs. Transfer trackers are tagging his name every Tuesday. He hasn't said anything yet. Which only makes it worse.`,
+  kind:'major-award',noStats:true
+ });
+
+ // Rival club interest
+ if(p.overall>=80&&Math.random()<.4)beats.push({
+  title:'👀 RIVAL INTEREST',
+  text:`Sources close to two unnamed clubs say ${name} is on the shortlist. ${club} have not received a formal bid. His agent has not returned calls. His agent never returns calls. That is not news.`,
+  kind:'major-transfer',noStats:true
+ });
+
+ // Contract tension
+ if(p.loyalty<20&&age>=22&&Math.random()<.45)beats.push({
+  title:'📝 CONTRACT STANDOFF',
+  text:`${name} has entered the final 18 months of his contract at ${club}. Talks are described as ongoing. Ongoing is not a word that inspires confidence. The agent's phone is very warm.`,
+  kind:'near-miss',noStats:true
+ });
+
+ // Big match hero
+ if(goals>=2&&rating>=7.5&&p.club.tier>=5)beats.push({
+  title:'⚡ BIG MATCH HERO',
+  text:`The game that mattered most. ${club} needed someone to stand up and ${name} did. That performance will be in YouTube compilations by Thursday. The internet has decided he is built different.`,
+  kind:'major-trophy',noStats:true
+ });
+
+ // Fan favourite
+ if(p.loyalty>=30&&apps>=28)beats.push({
+  title:'❤️ FAN FAVOURITE',
+  text:`The banner appeared in block L a few weeks ago. Now there are three. The chant has a second verse. ${name} is no longer just a footballer at ${club} — he is part of the furniture, and the furniture has feelings.`,
+  kind:'major-debut',noStats:true
+ });
+
+ // Manager trust
+ if(rating>=7.2&&apps>=30)beats.push({
+  title:'🤝 THE MANAGER TRUSTS HIM',
+  text:`The manager said it in a press conference unprompted. "He is one of the first names on the teamsheet." That is worth more than the quote suggests. The dressing room noticed.`,
+  kind:'major-debut',noStats:true
+ });
+
+ // Injury scare
+ if(apps<16&&apps>4&&!_wasOnLoan)beats.push({
+  title:'🩺 INJURY SCARE',
+  text:`A knock that kept everyone holding their breath for a week. The scan results came back clean — or clean enough. He returned to training with a slight adjustment to his movement that only the physio has noticed. So far.`,
+  kind:'major-injury',noStats:true
+ });
+
+ // International call snub
+ if(p.hasIntlDebut&&p.caps>0&&Math.random()<.3&&!goals&&rating<7.1)beats.push({
+  title:'🌍 LEFT OUT OF THE SQUAD',
+  text:`The international squad announcement dropped. ${name} is not in it. His camp says he needs a run of form. The manager said nothing. The absence says enough.`,
+  kind:'near-miss',noStats:true
+ });
+
+ // Agent pressure
+ if(p.loyalty<25&&p.overall>=76&&age>=22)beats.push({
+  title:'🤵 AGENT MAKES NOISE',
+  text:`His representative gave a quote to a national newspaper. The quote was technically about professionalism in football. Everyone knows what it means. ${club} have asked for clarity. Clarity is not forthcoming.`,
+  kind:'near-miss',noStats:true
+ });
+
+ if(!beats.length)return null;
+ const b=pick(beats);
+ return{age,clubName:seasonClub.name,...b,apps:0,goals:0,assists:0,ovr:0,rating:0,finish:'—',earnings:0,newsType:''};
+}
+
 function simulateSeason(age){
  const p=state.player;p.age=age;
  // Use loan club for narrative this season if set, then clear it
@@ -1984,16 +2472,16 @@ function simulateSeason(age){
  }
 
  const declineStart=Math.max(29,p.retirementAge-5);
- // Elite club training environment boosts development for young players
- // Even on the bench at a tier 6 club you're training with the best daily
- const eliteDevBonus=age<23&&p.club.tier>=6?.55:age<25&&p.club.tier>=6?.30:age<23&&p.club.tier>=5?.25:0;
- const devWindow=(age<23?1.25:age<28?0.85:age<declineStart?.20:-.55)+eliteDevBonus;
+ const eliteDevBonus=age<23&&p.club.tier>=6?.55:age<25&&p.club.tier>=6?.30:age<23&&p.club.tier>=5?.20:0;
+ const isDevClub=DEV_CLUBS.has(p.club.name)||DEV_CLUBS.has(seasonClub.name);
+ const devClubBonus=isDevClub&&age<22?.45:isDevClub&&age<25?.20:0;
+ const devWindow=(age<23?1.25:age<28?0.85:age<declineStart?.20:-.55)+eliteDevBonus+devClubBonus;
  const extraGrowth=(p.crossroadsTaken==='growthBoost'&&age<30)?1:0;
  const gap=(p.potential-p.overall)/10;
  let ovrDelta=Math.round(clamp(gap*.55+devWindow+p.growthBias*.25+extraGrowth+(p.personality.late&&age>24?1.1:0)-Math.max(p.pressure,0)*.07+rnd(-1,1),-4,5));
  if(age>p.retirementAge-4)ovrDelta-=rnd(0,2);
  const spike=progressionSpike(p,age,ovrDelta);
- if(spike)ovrDelta=spike.finalDelta;
+ // spike applied async in career loop via dice roll — hold ovrDelta as base
  const beforeOvr=p.overall;
  p.overall=clamp(p.overall+ovrDelta,32,absoluteOverallCap(p,age));
  const actualOvrDelta=p.overall-beforeOvr;
@@ -2027,10 +2515,15 @@ function simulateSeason(age){
  }
  const appClubTier=seasonClub.tier;
  let appBase=7+p.overall*.26+p.rep*.38+rnd(-7,6)-Math.max(p.pressure,0)*.50;
- // On loan to lower-tier club: guaranteed minutes, boost apps significantly
+ // On loan: guaranteed competitive football — override all callup gates
  if(_wasOnLoan){
-  const tierBoost=(p.club.tier-seasonClub.tier)*6; // Barca(6)→Walsall(1) = +30
+  p.hasFirstTeamCallup=true;
+  p.hasSeniorDebut=true;
+  const tierBoost=(p.club.tier-seasonClub.tier)*6;
   appBase+=Math.max(tierBoost,10);
+  // Hard floor: even a bad loan season means real minutes
+  const loanFloor=seasonClub.tier<=2?rnd(18,32):seasonClub.tier<=3?rnd(14,26):rnd(10,20);
+  appBase=Math.max(appBase,loanFloor);
  }
  if(!p.hasFirstTeamCallup)appBase=0;
  else if(!p.hasSeniorDebut)appBase=Math.min(appBase,rnd(0,5));
@@ -2053,11 +2546,11 @@ function simulateSeason(age){
   playInjury();HAP.injury();
  }
  let apps=clamp(Math.round(appBase),0,appCap);
- // Track bench-warming seasons: only counts at the parent club, not on loan
- if(age<=23&&apps<8&&p.hasFirstTeamCallup&&seasonClub.tier>=4&&!_wasOnLoan){
+ // Track bench years: 0 apps at any age, with OR without callup (both are stagnating)
+ if(apps<8&&age>16&&!_wasOnLoan){
   p._benchYears=(p._benchYears||0)+1;
  } else if(apps>=12||_wasOnLoan){
-  p._benchYears=Math.max(0,(p._benchYears||0)-1); // loan or good season resets bench clock
+  p._benchYears=Math.max(0,(p._benchYears||0)-1);
  }
  if(!p.hasSeniorDebut){
   if(p.hasFirstTeamCallup&&isDebutReady(p,age,seasonClub)){
@@ -2078,7 +2571,8 @@ function simulateSeason(age){
  let assists=output.assists;
  if(p.crossroadsTaken==='intFirst')assists=Math.max(0,assists-1);
  const weightedOutput=goals+(assists*.55);
- const rating=clamp(5.7+(p.overall-50)/35+(weightedOutput)/Math.max(apps,1)*.30+rnd(-20,25)/100,5.7,9.15);
+ const rawRating=clamp(5.7+(p.overall-50)/35+(weightedOutput)/Math.max(apps,1)*.30+rnd(-20,25)/100,5.7,9.15);
+ const rating=apps<3?0:rawRating; // no rating with no appearances
  const finish=clubFinish(p,rating,apps);
 
  // Caps — nation-specific thresholds stop elite players waiting until their 30s for a first call-up.
@@ -2159,7 +2653,7 @@ function simulateSeason(age){
    p.rep+=buyer.rep/35;
    p.totalFees+=fee;
    p.loyalty=0;
-   p._benchYears=0;p._benchwarmForkDone=true;p._injuryCrisisDone=false;
+   p._benchYears=0;p._benchwarmForkDone=true;p._injuryCrisisDone=false;p._pendingTransfer=false;
    p.clubHistory.push({club:buyer.name,from:p.age,apps:0,goals:0,assists:0,ratingSum:0,seasons:0,earnings:0,fee:money(fee)});
    const buyText=buyLoanClub
     ?`<strong>Bought outright.</strong> ${buyer.name} watched the loan and made it permanent. ${money(fee)}m. The parent club are furious and also cashing the cheque.`
@@ -2169,14 +2663,32 @@ function simulateSeason(age){
    // No loan return beat needed — went straight to new club
  }
  } else {
-  t=maybeTransfer(p,age);
-  if(t){extras.push(t.text);playTransfer();HAP.transfer();specialBeats.push({age,title:'💸 TRANSFER BOMBSHELL',text:`${t.text} New shirt, new pressure, new group chat arguments.`,apps:0,goals:0,assists:0,ovr:0,rating:0,finish:'New club',earnings:0,kind:'major-transfer',clubName:t.to,noStats:true,newsType:'transfer',feeLabel:t.fee,fromClub:t.from,toClub:t.to});}
+  // Flag transfer as pending — player gets agency after this season renders
+  const tCheck=.18-(p.loyalty*.012)+(p.transferIntent*.035)+(p.rep*.006);
+  if(age>=18&&Math.random()<tCheck)p._pendingTransfer=true;
  }
  const ps=maybePositionShift(p,age);if(ps)extras.push(ps);
  if(p.caps&&Math.random()<.15)extras.push(`${nationLabel(p.nation)} call again.`);
+ // ── Narrative beat pool: extra flavour cards ──────────────────────────────────
+ const narrativeChance=p.club.tier>=5?.32:.22;
+ if(Math.random()<narrativeChance&&!_wasOnLoan){
+  const nb=pickNarrativeBeat(p,age,apps,goals,assists,rating,ovrDelta,seasonClub);
+  if(nb)specialBeats.push(nb);
+ }
  const title=cleanAwards.includes("Ballon D'Goat")?'The golden one':headline(p,age,apps,goals,assists,rating,ovrDelta);
- let text=`${p.first} posts <strong>${apps} apps, ${goals} goals, ${assists} assists</strong> for ${seasonClub.name}. ${extras.join(' ')}`;
- if(!extras.length)text+=pick([' The algorithm nods politely.',' A useful year, not a documentary yet.',' The scouts keep a note in the margins.']);
+ let text;
+ if(apps===0){
+  const zeroLines=[
+   `${p.first} doesn't feature for ${seasonClub.name}. Not a minute. The training kit barely got dirty.`,
+   `Another season in the stand at ${seasonClub.name}. ${p.first} is developing, technically. The stats don't know that yet.`,
+   `${seasonClub.name} season: zero appearances. The player tracker apps have stopped bothering.`,
+   `${p.first} watches ${seasonClub.name}'s season from the inside. Learns a lot. Plays nothing. Frustrating doesn't cover it.`,
+  ];
+  text=pick(zeroLines)+' '+(extras.filter(e=>!e.includes('apps')).join(' ')||'');
+ } else {
+  text=`${p.first} posts <strong>${apps} apps, ${goals} goals, ${assists} assists</strong> for ${seasonClub.name}. ${extras.join(' ')}`;
+  if(!extras.length)text+=pick([' The algorithm nods politely.',' A useful year, not a documentary yet.',' The scouts keep a note in the margins.']);
+ }
  p.seasonLog.push({age,club:seasonClub.name,apps,goals,assists,rating,ovr:p.overall,finish,earnings:se,awards:cleanAwards,trophies:trophiesWon});
 
  // LOAN RETURN BEAT — only fires if player wasn't bought during the loan
@@ -2193,10 +2705,12 @@ function simulateSeason(age){
    apps>=15?
    `A useful stint. The question now is whether ${parentName} give him a real chance.`:
    `${parentName} will weigh up what they saw. It wasn't a disaster. Whether it was enough is another thing.`;
+  const statsStr=apps>0?`${apps} apps, ${goals}G, ${assists}A`:'No appearances';
+  const ratingStr=rating>0?`, avg ${rating.toFixed(2)}`:'';
   const returnLines=[
    `Back to <strong>${parentName}</strong> after a season at <strong>${loanName}</strong>. He ${verdict}.${ovrNote}${goalNote} ${returnVerdict}`,
-   `The loan at <strong>${loanName}</strong> is over. ${apps} apps, ${goals} goals, ${assists} assists, ${rating.toFixed(2)} average. He packs his bag and heads back to <strong>${parentName}</strong>.${ovrNote} ${returnVerdict}`,
-   `Season done at <strong>${loanName}</strong>. ${p.first} ${verdict} — ${apps} appearances, ${rating.toFixed(2)} average. Now the real question: what does ${parentName} do with him?${ovrNote}`,
+   `The loan at <strong>${loanName}</strong> is over. ${statsStr}${ratingStr}. He heads back to <strong>${parentName}</strong>.${ovrNote} ${returnVerdict}`,
+   `Season done at <strong>${loanName}</strong>. ${p.first} ${verdict} — ${statsStr}${ratingStr}. Now the real question: what does ${parentName} do with him?${ovrNote}`,
   ];
   specialBeats.push({
    age,
@@ -2218,7 +2732,7 @@ function simulateSeason(age){
   playTransfer();HAP.transfer();
  }
 
- return{clubName:seasonClub.name,apps,goals,assists,ovrDelta,rating,finish,earnings:se,awards:cleanAwards,trophies:trophiesWon,specialBeats,title,text};
+ return{clubName:seasonClub.name,apps,goals,assists,ovrDelta,rating,finish,earnings:se,awards:cleanAwards,trophies:trophiesWon,specialBeats,title,text,spike};
 }
 
 // ── CROSSROADS ────────────────────────────────────────────────────────────────
@@ -2229,8 +2743,49 @@ function showCrossroads(eventDef){
   const div=document.createElement('div');
   div.className='beat-card major-crossroads';
   div.setAttribute('style','--club1:rgba(255,211,106,.22);--club2:rgba(255,211,106,.04);--clubAccent:#ffd36a;');
+  // Build context card for events where current state matters
+  const p0=state.player;
+  const ctxEvents=['💛 THE OFFER','⚡ THE CHOICE','🏗️ THE REBUILD','🏖️ THE SAUDI CALL','😤 THE FALLOUT','🏆 THE ONE BIG SHOT'];
+  const needsCtx=ctxEvents.some(t=>eventDef.title.startsWith(t.slice(0,4)));
+  let ctxHtml='';
+  if(needsCtx){
+   const ovrColour=p0.overall>=90?'var(--gold)':p0.overall>=80?'var(--green)':'var(--text)';
+   const loyBar=p0.loyalty>40?'🟢 Loyal':p0.loyalty>20?'🟡 Uncertain':'🔴 Restless';
+   const pressBar=p0.pressure>25?'🔴 High':p0.pressure>12?'🟡 Simmering':'🟢 Settled';
+   const trophyStr=p0.trophies>0?p0.trophies+' trophy'+(p0.trophies===1?'':'ies'):'No trophies yet';
+   const earningsStr=p0.currentSalary>0?money(p0.currentSalary)+'/yr':'Unknown';
+   // Pick the stats most relevant to this specific event
+   const title=eventDef.title;
+   let rows='';
+   // Always show: club, OVR, age
+   rows+=`<div class="ctx-row"><span class="ctx-label">Club</span><span class="ctx-val">${p0.club.name}</span></div>`;
+   rows+=`<div class="ctx-row"><span class="ctx-label">Overall</span><span class="ctx-val" style="color:${ovrColour};font-weight:1000">${p0.overall}</span></div>`;
+   // Event-specific extras
+   if(title.includes('OFFER')||title.includes('REBUILD')||title.includes('FALLOUT')){
+    rows+=`<div class="ctx-row"><span class="ctx-label">Loyalty</span><span class="ctx-val">${loyBar}</span></div>`;
+    rows+=`<div class="ctx-row"><span class="ctx-label">Trophies</span><span class="ctx-val">${trophyStr}</span></div>`;
+   }
+   if(title.includes('CHOICE')||title.includes('MENTOR')){
+    rows+=`<div class="ctx-row"><span class="ctx-label">Potential</span><span class="ctx-val" style="color:var(--gold)">${p0.potential}</span></div>`;
+    rows+=`<div class="ctx-row"><span class="ctx-label">Pressure</span><span class="ctx-val">${pressBar}</span></div>`;
+   }
+   if(title.includes('SAUDI')){
+    rows+=`<div class="ctx-row"><span class="ctx-label">Current wages</span><span class="ctx-val">${earningsStr}</span></div>`;
+    rows+=`<div class="ctx-row"><span class="ctx-label">Trophies</span><span class="ctx-val">${trophyStr}</span></div>`;
+   }
+   if(title.includes('BIG SHOT')){
+    rows+=`<div class="ctx-row"><span class="ctx-label">Trophies</span><span class="ctx-val">${trophyStr}</span></div>`;
+    rows+=`<div class="ctx-row"><span class="ctx-label">Loyalty</span><span class="ctx-val">${loyBar}</span></div>`;
+    rows+=`<div class="ctx-row"><span class="ctx-label">Ballon D\'Goats</span><span class="ctx-val" style="color:var(--gold)">${p0.ballonDors}</span></div>`;
+   }
+   if(title.includes('FALLOUT')){
+    rows+=`<div class="ctx-row"><span class="ctx-label">Pressure</span><span class="ctx-val">${pressBar}</span></div>`;
+   }
+   ctxHtml=`<div class="crossroads-ctx">${rows}</div>`;
+  }
   div.innerHTML=`<div class="club-ribbon"><span class="club-dot"></span><span>Crossroads Moment</span></div>
   <div class="beat-head"><div class="age-pill milestone">${state.player.age}</div><div><div class="beat-title">${eventDef.title}</div><div class="beat-text"><strong>${eventDef.prompt}</strong><br>This choice will shape the rest of the career.</div></div></div>
+  ${ctxHtml}
   <div class="choice-btns">
    <button class="choice-btn" id="choiceA">${eventDef.optA.label}<span class="choice-sub">${eventDef.optA.sub}</span></button>
    <button class="choice-btn" id="choiceB">${eventDef.optB.label}<span class="choice-sub">${eventDef.optB.sub}</span></button>
@@ -2239,9 +2794,9 @@ function showCrossroads(eventDef){
   div.scrollIntoView({behavior:'smooth',block:'end'});
   async function applyChoice(opt){
    state.awaitingChoice=false;
-   div.querySelector('.choice-btns').remove();
+   const cb=div.querySelector('.choice-btns,.fork-btns,.transfer-choice-btns');if(cb)cb.remove();
    const chosen=opt==='A'?eventDef.optA:eventDef.optB;
-   div.querySelector('.beat-text').innerHTML=`<strong>${chosen.label}.</strong> ${chosen.text}`;
+   const btEl=div.querySelector('.beat-text');if(btEl)btEl.innerHTML=`<strong>${chosen.label}.</strong> ${chosen.text}`;
    const p=state.player,fx=chosen.fx||{};
    if(fx.crossroadsTaken)p.crossroadsTaken=fx.crossroadsTaken;
    if(fx.repBoost)p.rep+=fx.repBoost/10;
@@ -2276,7 +2831,7 @@ function showCrossroads(eventDef){
     p.totalFees+=fee;
     p.loyalty=0;
     p.pressure=Math.max(0,p.pressure-10);
-    p._benchYears=0;p._benchwarmForkDone=true;p._injuryCrisisDone=false;
+    p._benchYears=0;p._benchwarmForkDone=true;p._injuryCrisisDone=false;p._pendingTransfer=false;
     p.clubHistory.push({club:buyer.name,from:p.age,apps:0,goals:0,assists:0,ratingSum:0,seasons:0,earnings:0,fee:isFree?'Free':money(fee)});
     // Add transfer beat immediately to timeline
     await sleep(800);
@@ -2314,42 +2869,36 @@ function seasonLabelForAge(age){
  return String(startYear).slice(-2)+'/'+String(startYear+1).slice(-2);
 }
 function setCareerSimulating(isSimulating,age){
- const ticker=$('seasonTicker'), btn=$('seasonAdvanceBtn'), proceed=$('retireProceedBtn');
+ const ticker=$('seasonTicker'),proceed=$('retireProceedBtn');
  if(ticker)ticker.style.display=isSimulating?'flex':'none';
- if(btn)btn.style.display='none';
  if(proceed)proceed.style.display='none';
- if($('seasonTickerLabel'))$('seasonTickerLabel').textContent='Simulating season';
  if($('tickerSeason'))$('tickerSeason').textContent=age?seasonLabelForAge(age):'—';
-}
-function setCareerDecisionPrompt(isDecision,age){
- const ticker=$('seasonTicker');
- if(ticker)ticker.style.display='flex';
- if($('seasonTickerLabel'))$('seasonTickerLabel').textContent=isDecision?'Make a decision':'Simulating season';
- if($('tickerSeason'))$('tickerSeason').textContent=age?seasonLabelForAge(age):'—';
+ document.querySelectorAll('.season-advance-btn').forEach(b=>b.remove());
 }
 function waitForSeasonAdvance(age){
  return new Promise(resolve=>{
-  const btn=$('seasonAdvanceBtn');
   const ticker=$('seasonTicker');
   const proceed=$('retireProceedBtn');
   const label=seasonLabelForAge(age);
   if(ticker)ticker.style.display='none';
-  if($('seasonTickerLabel'))$('seasonTickerLabel').textContent='Simulating season';
   if(proceed)proceed.style.display='none';
-  if(btn){
-   btn.textContent='Generate season '+label+' →';
-   btn.style.display='block';
-   btn.disabled=false;
-   btn.onclick=()=>{
-    btn.disabled=true;
-    btn.style.display='none';
-    if(ticker)ticker.style.display='flex';
-    if($('tickerSeason'))$('tickerSeason').textContent=label;
+  // Inline button — appended to timeline, no fixed-position fighting Safari
+  const btn=document.createElement('button');
+  btn.className='btn gold season-advance-btn';
+  btn.style.cssText='width:100%;margin:16px 0 calc(80px + env(safe-area-inset-bottom));display:block';
+  btn.textContent='▶ Generate season '+label;
+  $('timeline').appendChild(btn);
+  setTimeout(()=>btn.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+  btn.onclick=()=>{
+   btn.disabled=true;
+   btn.textContent='Simulating '+label+'…';
+   btn.style.opacity='.5';
+   if($('tickerSeason'))$('tickerSeason').textContent=label;
+   setTimeout(()=>{
+    btn.remove();
     resolve();
-   };
-  }else{
-   resolve();
-  }
+   },200);
+  };
  });
 }
 function addSeasonDivider(age,s){
@@ -2374,9 +2923,26 @@ async function startCareer(){
  state.running=true;state.loanForkDone=false;
  $('timeline').innerHTML='';setScreen('careerScreen');updateMini();
  $('lastMoment').classList.remove('show');
- $('retireFooter').classList.add('show');
  setCareerSimulating(false,16);
- addBeat({age:16,title:'Scout report locked',text:`${p.first} ${p.last} arrives at ${p.club.name}. ${nationLabel(p.nation)}. ${p.position}. ${p.personality.name}. Scout prediction: <strong>${p.prediction.label}</strong>. ${p.prediction.line}`,apps:0,goals:0,assists:0,ovr:0,rating:0,clubName:p.club.name});
+ const ovrColour=p.overall>=75?'var(--gold)':'var(--green)';
+ const potColour=p.potential>=90?'var(--gold)':p.potential>=80?'var(--green)':'var(--text)';
+ const scoutCardHtml=
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">'+
+   '<div style="border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.055);border-radius:14px;padding:12px;text-align:center">'+
+    '<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin-bottom:4px">Overall</div>'+
+    '<div style="font-size:36px;font-weight:1000;line-height:1;color:'+ovrColour+'">'+p.overall+'</div>'+
+   '</div>'+
+   '<div style="border:1px solid rgba(255,211,106,.3);background:rgba(255,211,106,.07);border-radius:14px;padding:12px;text-align:center">'+
+    '<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin-bottom:4px">Potential</div>'+
+    '<div style="font-size:36px;font-weight:1000;line-height:1;color:'+potColour+'">'+p.potential+'</div>'+
+   '</div>'+
+  '</div>'+
+  '<div style="border:1px solid rgba(118,201,255,.25);background:rgba(118,201,255,.07);border-radius:14px;padding:12px;margin-top:4px">'+
+   '<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:1000;margin-bottom:5px">Scout verdict</div>'+
+   '<div style="font-size:14px;font-weight:1000;color:var(--blue);margin-bottom:4px">'+p.prediction.label+'</div>'+
+   '<div style="font-size:13px;color:var(--muted);font-weight:400;line-height:1.6">'+p.prediction.line+'</div>'+
+  '</div>';
+ addBeat({age:16,title:'📋 Scout report: '+p.first+' '+p.last,text:scoutCardHtml+' <span style="font-size:11px;color:var(--dim)">'+nationLabel(p.nation)+' · '+p.position+' · '+p.personality.name+'</span>',apps:0,goals:0,assists:0,ovr:0,rating:0,clubName:p.club.name,noStats:true});
  await sleep(900);
  if(isFirstTeamReady(p,16,p.club)){
   p.hasFirstTeamCallup=true;
@@ -2403,40 +2969,65 @@ async function startCareer(){
   if(age===crossroadsAge&&!state.crossroadsDone){
    state.crossroadsDone=true;
    await sleep(1600);
-   setCareerDecisionPrompt(true,age);
    await showCrossroads(crossEvent);
-   setCareerDecisionPrompt(false,age);
    await sleep(1200);
   }
-  // Early-career fork: blocked at big club, loan choice (ages 17-20, tier>=5 starting club)
-  const loanBar=p.club.tier>=6?66:p.club.tier>=5?58:99;
-  if(!state.loanForkDone&&age>=17&&age<=22&&p.club.tier>=5&&p.overall<loanBar){
+  // Early-career fork: fired at start of season (before sim) if OVR too low for the club
+  const loanBar=p.club.tier>=6?72:p.club.tier>=5?62:p.club.tier>=4?54:99;
+  if(!state.loanForkDone&&age>=16&&age<=22&&p.club.tier>=4&&p.overall<loanBar){
    state.loanForkDone=true;
    await sleep(1400);
-   setCareerDecisionPrompt(true,age);
    await showLoanFork(p);
-   setCareerDecisionPrompt(false,age);
+   await sleep(1000);
+  }
+  // Dev club: push loan immediately if well below bar (fires from age 16)
+  const devGapTrigger=p.club.tier>=6?12:p.club.tier>=5?10:p.club.tier>=4?8:99;
+  const devBarHere=p.club.tier>=6?72:p.club.tier>=5?62:p.club.tier>=4?54:99;
+  if(!state.loanForkDone&&age>=16&&age<=18&&DEV_CLUBS.has(p.club.name)&&(devBarHere-p.overall)>=devGapTrigger){
+   state.loanForkDone=true;
+   await sleep(1400);
+   await showDevClubLoanFork(p);
    await sleep(1000);
   }
   const s=simulateSeason(age);
   updateMini();
   if($('tickerSeason'))$('tickerSeason').textContent=seasonLabelForAge(age);
-  addBeat({age,title:s.title,text:s.text,apps:s.apps,goals:s.goals,assists:s.assists,ovr:s.ovrDelta,rating:s.rating,finish:s.finish,earnings:s.earnings,awardsText:s.awards.length?s.awards.join(', '):'',trophiesText:s.trophies.length?s.trophies.join(', '):'',clubName:s.clubName,currentOvr:state.player.overall,trophyCount:s.trophies.length,awardCount:s.awards.length});
   for(const b of s.specialBeats){
    await sleep(800);addBeat(b);
    if(b.kind==='major-trophy'||b.kind==='major-award'||b.isBallonDor)setLastMoment(b.title+' — '+b.clubName);
   }
+  // SPIKE: if a breakout was rolled this season, show dice and apply the result
+  if(s.spike){
+   await sleep(1200);
+   const diceResult=await showSpikeRoll(p,age,s.spike,s.clubName);
+   // Apply the bonus to overall now
+   const bonusApplied=diceResult.bonus;
+   p.overall=clamp(p.overall+bonusApplied,32,99);
+   updateMini();
+   setLastMoment('⚡ '+diceResult.label+' +'+bonusApplied+' OVR');
+   await sleep(600);
+  }
+  // Season overview should land after the narrative/news beats, so it reads like a wrap-up rather than a spoiler.
+  await sleep(500);
+  addBeat({age,title:s.title,text:s.text,apps:s.apps,goals:s.goals,assists:s.assists,ovr:s.ovrDelta,rating:s.rating,finish:s.finish,earnings:s.earnings,awardsText:s.awards.length?s.awards.join(', '):'',trophiesText:s.trophies.length?s.trophies.join(', '):'',clubName:s.clubName,currentOvr:state.player.overall,trophyCount:s.trophies.length,awardCount:s.awards.length});
   setCareerSimulating(false,age);
   addSeasonDivider(age,s);
   if(state.player.careerEnded)break;
+  // Transfer agency: show choice AFTER season divider so player sees the season first
+  if(p._pendingTransfer){
+   p._pendingTransfer=false;
+   await sleep(600);
+   await showTransferChoice(p,age);
+   await sleep(400);
+  }
   // Benchwarming fork — AFTER simulateSeason so _benchYears is current
   // Only at actual benching clubs (tier>=4), not tiny clubs where not playing is normal
-  if(!p._benchwarmForkDone&&(p._benchYears||0)>=2&&age>=17&&age<=25&&p.club.tier>=4){
+  // At elite clubs (tier 6), 1 zero-app season is enough — loan it immediately
+  const benchThreshold=p.club.tier>=6?1:2;
+  if(!p._benchwarmForkDone&&(p._benchYears||0)>=benchThreshold&&age>=17&&age<=32){
    p._benchwarmForkDone=true;
    await sleep(1200);
-   setCareerDecisionPrompt(true,age);
    await showBenchwarmFork(p);
-   setCareerDecisionPrompt(false,age);
    await sleep(1000);
   }
   // Season pauses here until the player starts the next one.
@@ -2445,12 +3036,17 @@ async function startCareer(){
  // Retirement: inline beat card + sticky footer button (no destructive modal)
  const rlines=[`${p.seasons} seasons. ${p.totalGoals} goals. One save that mattered.`,`The boots come off. The career becomes a Wikipedia page.`,`From academy kid to whatever this became. The ride is done.`,`Age ${p.age}. Longevity ${p.longevity}/100. Not bad for a prospect.`];
  const retireLine=pick(rlines);
- addBeat({age:p.age,title:'🥾 BOOTS HUNG UP',text:`<strong>${p.first} ${p.last}</strong> retires. ${retireLine} Scroll up and relive every season, or see the legacy below.`,apps:0,goals:0,assists:0,ovr:0,rating:0,finish:'Retired',earnings:0,kind:'retirement-beat',clubName:p.club.name,noStats:true});
+ addBeat({age:p.age,title:'🥾 BOOTS HUNG UP',text:`<strong>${p.first} ${p.last}</strong> retires. ${retireLine} Career totals locked in below. Scroll up and relive every season, or see the legacy below.`,apps:p.totalApps,goals:p.totalGoals,assists:p.totalAssists,ovr:0,rating:(p.seasons?p.ratingSum/p.seasons:0),finish:'Retired',earnings:p.totalEarnings,kind:'retirement-beat',clubName:p.club.name,currentOvr:p.overall,trophyCount:p.trophies,awardCount:p.awards,noStats:false});
  await sleep(600);
  if($('seasonTicker'))$('seasonTicker').style.display='none';
- if($('seasonAdvanceBtn'))$('seasonAdvanceBtn').style.display='none';
- if($('retireProceedBtn'))$('retireProceedBtn').style.display='block';
- await new Promise(res=>{$('retireProceedBtn').onclick=()=>{$('retireFooter').classList.remove('show');$('retireProceedBtn').style.display='none';res();};});
+ document.querySelectorAll('.season-advance-btn').forEach(b=>b.remove());
+ const legacyBtn=document.createElement('button');
+ legacyBtn.className='btn gold season-advance-btn';
+ legacyBtn.textContent='Hang up the boots — see the legacy →';
+ legacyBtn.style.cssText='width:100%;margin:18px 0 calc(80px + env(safe-area-inset-bottom));display:block';
+ $('timeline').appendChild(legacyBtn);
+ setTimeout(()=>legacyBtn.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+ await new Promise(res=>{legacyBtn.onclick=()=>{legacyBtn.disabled=true;legacyBtn.remove();res();};});
  showSummary();
 }
 
@@ -2620,7 +3216,7 @@ $('shareCopyBtn').onclick=async()=>{
  // Text fallback (canvas not available in sandboxed iframe)
  const p=state.player;
  if(!p)return;
-    const text = `⚽ Project GOAT\n${p.first} ${p.last}\nGOAT Score: ${state.pendingGoatScore}/100\n${goatStatus(state.pendingGoatScore, p)}\n${p.totalGoals}G ${p.totalAssists}A ${p.totalApps} apps\n🏆 ${p.trophies} trophies • 🏅 ${p.awards} awards • 🐐 ${p.ballonDors} Ballon D'Goat`;
+    const text = `⚽ Project GOAT\n${p.first} ${p.last}\nGOAT Score: ${state.pendingGoatScore}/100\n${goatStatus(state.pendingGoatScore, p)}\n${p.totalGoals}G ${p.totalAssists}A ${p.totalApps} apps\n🏆 ${p.trophies} trophies • 🏅 ${p.awards} awards • 🐐 ${p.ballonDors} Ballon D'Goat\n`;
  try{await navigator.clipboard.writeText(text);}catch(e){}
 };
 
@@ -2682,7 +3278,7 @@ async function showSummary(){
    ? `<div class="run-result-card"><div class="run-result-title">Run result</div><div class="run-result-main">Successful run — Ballon D'Goat won.</div><div class="run-result-copy">He reached the golden summit and became the best player in the world for a season. That counts. But becoming the greatest to ever do it needs the record-breaking monster route. Dang.</div></div>`
    : `<div class="run-result-card miss"><div class="run-result-title">Run result</div><div class="run-result-main">The golden door stayed shut.</div><div class="run-result-copy">Good career maybe. Great career maybe. But no Ballon D'Goat means the save never hit the main target.</div></div>`;
  const isBeat=!personalBest||score>personalBest.score;
- if(isBeat){personalBest={score,name:`${p.first} ${p.last}`,status,mode:p.mode||state.mode||'standard'};localStorage.setItem('prospect_pb',JSON.stringify(personalBest));}
+ if(isBeat){personalBest={score,name:`${p.first} ${p.last}`,status,mode:p.mode||state.mode||'standard',nation:p.nation,position:p.position};localStorage.setItem('prospect_pb',JSON.stringify(personalBest));}
  const againBtn=$('againBtn');
  if(isBeat&&score>0){againBtn.textContent=`New personal best: ${score}! Go again →`;againBtn.className='btn beat-pb';}
  else if(personalBest){againBtn.textContent=`Try again — beat ${personalBest.score}`;againBtn.className='btn gold';}
@@ -2771,19 +3367,11 @@ ${runResult}
 
 // ── ACTION BAR OFFSET ─────────────────────────────────────────────────────────
 function updateActionOffset(){
- const active=document.getElementById('globalActions');
- const h=active?Math.ceil(active.getBoundingClientRect().height):0;
- const isDesktop=window.matchMedia('(min-width:900px)').matches;
- const isMobile=window.matchMedia('(max-width:640px)').matches;
- const buffer=isMobile?20:isDesktop?8:14;
- document.documentElement.style.setProperty('--actions-offset',(h+buffer)+'px');
+ // Global fixed actions were removed. Buttons now live inline, so no phantom footer should cover the timeline.
+ document.documentElement.style.setProperty('--actions-offset','0px');
 }
 window.addEventListener('resize',updateActionOffset);
 window.addEventListener('orientationchange',()=>setTimeout(updateActionOffset,120));
-if('ResizeObserver' in window){
- const ro=new ResizeObserver(updateActionOffset);
- const ga=document.getElementById('globalActions');if(ga)ro.observe(ga);
-}
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 updatePBBanner();
@@ -2804,11 +3392,10 @@ document.querySelectorAll('.mode-card').forEach(btn=>{
 $('positionSelect').onchange=()=>{if(state.mode==='easy')resetScoutVisuals();};
 $('continentSelect').onchange=()=>{if(state.mode==='easy')resetScoutVisuals();};
 
-$('primaryBtn').onclick=()=>$('primaryBtn').textContent==='Start Career'?startCareer():scout({fresh:true});
-$('resetBtn').onclick=()=>{};
-$('someoneElseBtn').onclick=()=>{updateActionOffset();scout({fresh:true});};
+if($('primaryBtn'))$('primaryBtn').onclick=()=>$('primaryBtn').textContent==='Start Career'?startCareer():scout({fresh:true});
+if($('someoneElseBtn'))$('someoneElseBtn').onclick=()=>{updateActionOffset();scout({fresh:true});};
 $('againBtn').onclick=()=>{
- state.player=null;state.modeRolls=0;locks={overall:false,potential:false,club:false};$('primaryBtn').textContent='Scout Prospect';$('resetBtn').style.display='none';$('someoneElseBtn').style.display='none';['rerollOverall','rerollPotential','rerollClub'].forEach(id=>{if($(id)){ $(id).style.display='none';$(id).disabled=true; }});
+ state.player=null;state.modeRolls=0;locks={overall:false,potential:false,club:false};$('primaryBtn').textContent='Scout Prospect';if($('someoneElseBtn'))(()=>{const _s=$('someoneElseBtn');if(_s)_s.style.display='none'})();['rerollOverall','rerollPotential','rerollClub'].forEach(id=>{if($(id)){ $(id).style.display='none';$(id).disabled=true; }});
  $('shareBtn').style.display='none';
  ['overallVal','potentialVal','techVal','physVal','mentVal'].forEach(id=>$(id).textContent='—');
  $('firstVal').textContent='Tap scout';
@@ -2826,3 +3413,9 @@ document.querySelectorAll('.faq-q').forEach(btn=>btn.addEventListener('click',()
 </script>
 </body>
 </html>
+
+<!-- Patch: legacy fixed action/footer shells disabled; career controls are inline. -->
+<style>
+.sticky-actions,.retire-footer{display:none!important;pointer-events:none!important;}
+.home-title{max-width:520px;}
+</style>
