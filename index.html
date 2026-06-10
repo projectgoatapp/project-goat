@@ -408,6 +408,15 @@
     .transfer-choice-btns{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}
     @media(min-width:560px){.transfer-choice-btns{grid-template-columns:1fr 1fr}}
     @media(min-width:820px){.transfer-choice-btns{grid-template-columns:1fr 1fr 1fr 1fr}}
+    .bd-reveal-wrap{margin-top:14px}
+    .bd-shortlist{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,211,106,.28);background:rgba(255,211,106,.10);border-radius:999px;padding:6px 10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:1000;margin-bottom:10px}
+    .bd-reveal-btn{width:100%;border:0;border-radius:16px;background:linear-gradient(180deg,#ffe28b,#d89e20);color:#0a0800;font-weight:1000;font-size:15px;padding:15px 18px;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;box-shadow:0 14px 40px rgba(255,211,106,.22);font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+    .bd-reveal-btn:active{transform:scale(.97)}
+    .gold-confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:140}
+    .gold-confetti-piece{position:absolute;top:-24px;width:10px;height:18px;border-radius:2px;background:#ffd36a;opacity:.98;animation:confettiFall linear forwards}
+    .gold-confetti-piece.alt{background:#fff3c2}
+    .gold-confetti-piece.dark{background:#d89e20}
+    @keyframes confettiFall{0%{transform:translate3d(0,-8vh,0) rotate(0deg);opacity:0}8%{opacity:1}100%{transform:translate3d(var(--drift,0px),115vh,0) rotate(720deg);opacity:.9}}
     /* Crossroads context card */
     .crossroads-ctx{border:1px solid rgba(255,211,106,.22);background:rgba(0,0,0,.28);border-radius:14px;padding:10px 12px;margin:12px 0;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
     .ctx-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -1427,13 +1436,13 @@ function showRecoveryCard(message='The save hit a dodgy patch. You can keep goin
 }
 function nudgeWaitingDecision(label='decision'){
  try{
-  document.querySelectorAll('.transfer-choice-btns button,.fork-btns button,#diceRollBtn,#spikeRollBtn,.season-advance-btn').forEach(btn=>{
+  document.querySelectorAll('.transfer-choice-btns button,.fork-btns button,.bd-reveal-btn,#diceRollBtn,#spikeRollBtn,.season-advance-btn').forEach(btn=>{
    if(btn&&btn.style.display!=='none'){
     btn.disabled=false;
     btn.style.opacity='';
    }
   });
-  const activeControls=document.querySelector('.transfer-choice-btns,.fork-btns') || document.getElementById('diceRollBtn') || document.getElementById('spikeRollBtn') || document.querySelector('.season-advance-btn');
+  const activeControls=document.querySelector('.transfer-choice-btns,.fork-btns,.bd-reveal-wrap') || document.getElementById('diceRollBtn') || document.getElementById('spikeRollBtn') || document.querySelector('.season-advance-btn');
   const card=activeControls?activeControls.closest('.beat-card')||activeControls.closest('.season-divider')||document.getElementById('timeline'):document.getElementById('timeline');
   if(card&&!card.querySelector('.decision-waiting-note')){
    const note=document.createElement('div');
@@ -1801,6 +1810,72 @@ function updateMini(){
  $('careerBar').style.width=clamp(((p.age-16)/Math.max(1,(p.retirementAge-16)))*100,0,100)+'%';
 }
 function setLastMoment(text){$('lastMomentText').innerHTML=text;$('lastMoment').classList.add('show');}
+
+
+function launchGoldenConfetti(){
+ const layer=document.createElement('div');
+ layer.className='gold-confetti';
+ const count=68;
+ for(let i=0;i<count;i++){
+  const piece=document.createElement('span');
+  const variant=pick(['','alt','dark']);
+  piece.className='gold-confetti-piece'+(variant?' '+variant:'');
+  piece.style.left=(Math.random()*100).toFixed(2)+'vw';
+  piece.style.animationDelay=(Math.random()*0.55).toFixed(2)+'s';
+  piece.style.animationDuration=(2.6+Math.random()*1.9).toFixed(2)+'s';
+  piece.style.setProperty('--drift',(-140+Math.random()*280).toFixed(0)+'px');
+  piece.style.width=(6+Math.random()*8).toFixed(0)+'px';
+  piece.style.height=(10+Math.random()*14).toFixed(0)+'px';
+  if(Math.random()<0.35)piece.style.borderRadius='999px';
+  layer.appendChild(piece);
+ }
+ document.body.appendChild(layer);
+ setTimeout(()=>layer.remove(),5000);
+}
+
+function showBallonDorDecisionBeat(b){
+ return new Promise(resolve=>{
+  const div=document.createElement('div');
+  const cName=b.clubName||nameOf(state.player.club);
+  div.className='beat-card major-award';
+  div.setAttribute('style',clubTheme(cName));
+  div.innerHTML=
+   '<div class="club-ribbon"><span class="club-dot"></span><span>'+cName+'</span></div>'+
+   '<div class="beat-head"><div class="age-pill milestone">'+b.age+'</div><div>'+
+   '<div class="beat-title">🏅 BALLON D\'GOAT CEREMONY</div>'+
+   '<div class="beat-text"><span class="bd-shortlist">Final shortlist • live envelope</span><br>'+
+   (b.text||'The cameras find him. The room goes quiet. The envelope is sat there looking unnecessarily dramatic.')+
+   '</div></div></div>'+
+   '<div class="bd-reveal-wrap"><button class="bd-reveal-btn" type="button">Reveal winner</button></div>';
+  $('timeline').appendChild(div);
+  div.scrollIntoView({behavior:'smooth',block:'end'});
+  const btn=div.querySelector('.bd-reveal-btn');
+  btn.onclick=()=>{
+   const wrap=div.querySelector('.bd-reveal-wrap');if(wrap)wrap.remove();
+   const ovrTier=b.currentOvr>=95?'overload':b.currentOvr>=85?'gold':b.currentOvr>=74?'silver':b.currentOvr>0?'bronze':'';
+   const ovrChip=(b.currentOvr&&ovrTier)?'<div class="beat-ovr-chip '+ovrTier+'">OVR '+b.currentOvr+'</div>':'';
+   div.className='beat-card '+(b.revealWin?'ballon-dor':'near-miss');
+   div.setAttribute('style',clubTheme(cName));
+   div.innerHTML=
+    ovrChip+
+    '<div class="club-ribbon"><span class="club-dot"></span><span>'+cName+'</span></div>'+
+    '<div class="beat-head"><div class="age-pill milestone">'+b.age+'</div><div>'+
+    '<div class="beat-title">'+(b.resultTitle||'🏅 AWARD WON')+'</div>'+
+    '<div class="beat-text">'+(b.resultText||'')+'</div></div></div>';
+   if(b.revealWin){
+    playBallonDor();
+    HAP.ballonDor();
+    launchGoldenConfetti();
+    toast("BALLON D'GOAT WON.");
+   }else{
+    playLock();
+    toast("Ballon D'Goat revealed.");
+   }
+   div.scrollIntoView({behavior:'smooth',block:'nearest'});
+   resolve(b);
+  };
+ });
+}
 
 function addBeat({age,title,text,apps=0,goals=0,assists=0,ovr=0,rating=0,finish='—',earnings=0,awardsText='',trophiesText='',kind='',clubName=null,isBallonDor=false,currentOvr=0,trophyCount=0,awardCount=0,noStats=false,newsType='',feeLabel='',fromClub='',toClub=''}){
  const div=document.createElement('div');
@@ -2907,14 +2982,19 @@ function simulateSeason(age){
   const isBD=award==="Ballon D'Goat";
   const log=(p.awardLog||[]).slice().reverse().find(a=>a.age===age&&a.award===award);
   const isGoalAward=!!log?.goalAward;
-  if(isBD){playBallonDor();HAP.ballonDor();}
-  else{playTrophy();}
+  if(!isBD){playTrophy();}
   const awardTitle=isBD?'✨ BALLON D\'GOAT':isGoalAward?'🚀 GOAL AWARD WON':'🏅 AWARD WON';
-  const awardText=isBD?`<strong>BALLON D'GOAT.</strong> The envelope opens. It's his name. ${apps} apps, ${goals} goals, ${assists} assists, ${rating.toFixed(2)} average at ${seasonClub.name}. The save has gone genuinely feral.`:isGoalAward?`<strong>${award}.</strong> ${log.goalStory}`:`<strong>${award}</strong>. ${apps} apps, ${goals} goals, ${assists} assists at ${seasonClub.name}.`;
-  specialBeats.push({age,title:awardTitle,text:awardText,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:isGoalAward?'major-breakout':'major-award',clubName:seasonClub.name,isBallonDor:isBD,newsType:'award',noStats:true});
+  const awardText=isBD
+   ? `The cameras cut over. ${seasonClub.name} have sent their lad in a tux. ${apps} apps, ${goals} goals, ${assists} assists and a ${rating.toFixed(2)} average. The envelope is ready. Press reveal winner.`
+   : isGoalAward?`<strong>${award}.</strong> ${log.goalStory}`:`<strong>${award}</strong>. ${apps} apps, ${goals} goals, ${assists} assists at ${seasonClub.name}.`;
+  if(isBD){
+   specialBeats.push({age,title:'🏅 BALLON D\'GOAT CEREMONY',text:awardText,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:'major-award',clubName:seasonClub.name,isBallonDor:true,newsType:'award',noStats:true,bdCeremony:true,revealWin:true,resultTitle:"✨ BALLON D'GOAT",resultText:`<strong>BALLON D'GOAT.</strong> The envelope opens. It's his name. ${apps} apps, ${goals} goals, ${assists} assists, ${rating.toFixed(2)} average at ${seasonClub.name}. The save has gone genuinely feral.`,currentOvr:p.overall});
+  }else{
+   specialBeats.push({age,title:awardTitle,text:awardText,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:isGoalAward?'major-breakout':'major-award',clubName:seasonClub.name,isBallonDor:false,newsType:'award',noStats:true});
+  }
  });
  if(hasNearMiss){
-  specialBeats.push({age,title:'💔 CLOSE. SO CLOSE.',text:`He was in the conversation. The ceremony runs long. His name is in the envelope of people who didn't make it. <strong>${p.ballonDorNearMisses} near-miss${p.ballonDorNearMisses===1?'':'es'} now.</strong> The golden door keeps not opening.`,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:'near-miss',clubName:seasonClub.name});
+  specialBeats.push({age,title:'🏅 BALLON D\'GOAT CEREMONY',text:`He is in the conversation. ${apps} apps, ${goals} goals, ${assists} assists and a ${rating.toFixed(2)} average. The ceremony drags on. Press reveal winner.`,apps,goals,assists,ovr:0,rating,finish,earnings:0,kind:'major-award',clubName:seasonClub.name,bdCeremony:true,revealWin:false,resultTitle:'💔 CLOSE. SO CLOSE.',resultText:`He was in the conversation. The ceremony runs long. His name is in the envelope of people who didn't make it. <strong>${p.ballonDorNearMisses} near-miss${p.ballonDorNearMisses===1?'':'es'} now.</strong> The golden door keeps not opening.`,currentOvr:p.overall,noStats:true});
  }
 
  const se=annualSalary(p,age,rating);p.currentSalary=se;p.totalEarnings+=se;
@@ -3302,7 +3382,13 @@ async function startCareer(){
   updateMini();
   if($('tickerSeason'))$('tickerSeason').textContent=seasonLabelForAge(age);
   for(const b of s.specialBeats){
-   await sleep(800);addBeat(b);
+   await sleep(800);
+   if(b.bdCeremony){
+    await showBallonDorDecisionBeat(b);
+    setLastMoment((b.revealWin?"✨ BALLON D'GOAT":"💔 CLOSE. SO CLOSE.")+' — '+b.clubName);
+    continue;
+   }
+   addBeat(b);
    if(b.kind==='major-trophy'||b.kind==='major-award'||b.isBallonDor)setLastMoment(b.title+' — '+b.clubName);
   }
   // SPIKE: if a breakout was rolled this season, show dice and apply the result
